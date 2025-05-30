@@ -265,13 +265,9 @@
         return;
       }
 
-      const hour = new Date().getHours();
+      // Force dark theme always by default:
       document.body.classList.remove('day-theme', 'night-theme');
-      if (hour >= 6 && hour < 18) {
-        document.body.classList.add('day-theme');
-      } else {
-        document.body.classList.add('night-theme');
-      }
+      document.body.classList.add('night-theme');
     }
 
     document.getElementById('theme-toggle').addEventListener('click', () => {
