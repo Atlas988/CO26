@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Class of 2026</title>
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    rel="stylesheet"
-  />
+  <title>Class of 2026 Countdown</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+    /* Base & Themes */
     body {
       margin: 0;
       font-family: 'Roboto', sans-serif;
@@ -25,6 +22,7 @@
       background-color: #f5f5f5;
       color: #202020;
     }
+    /* Card */
     .card {
       background: #1e1e1e;
       border-radius: 16px;
@@ -45,6 +43,7 @@
       color: #202020;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
     }
+    /* Headings & text */
     h1 {
       margin: 0 0 0.25em 0;
       font-weight: 700;
@@ -55,15 +54,16 @@
     }
     .quips {
       font-style: italic;
-      color: #f9d71c; /* bright yellow for quips */
+      color: #f9d71c; /* yellow quips */
       min-height: 1.8em;
+      font-size: 1.1rem;
     }
+    /* Progress bar */
     progress {
       width: 100%;
       height: 20px;
       border-radius: 10px;
       appearance: none;
-      -webkit-appearance: none;
       background-color: #333;
       margin-bottom: 0.25em;
       transition: background-color 0.3s;
@@ -73,7 +73,7 @@
       border-radius: 10px;
     }
     progress::-webkit-progress-value {
-      background-color: #1E90FF; /* bright blue for progress fill */
+      background-color: #1E90FF; /* blue */
       border-radius: 10px;
     }
     progress::-moz-progress-bar {
@@ -83,8 +83,9 @@
     #percentage {
       font-weight: 600;
       font-size: 1.1rem;
-      color: #1E90FF; /* blue percentage text */
+      color: #1E90FF; /* blue percentage */
     }
+    /* Buttons */
     .btn-group {
       display: flex;
       justify-content: center;
@@ -101,21 +102,26 @@
       color: #fff;
       transition: background-color 0.3s;
       user-select: none;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     button:hover {
-      background-color: #0b62d0; /* darker blue on hover */
+      background-color: #0b62d0; /* darker blue */
     }
+    /* Theme toggle button */
     #themeToggleBtn {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background-color: #f9d71c; /* yellow toggle button */
+      background-color: #1E90FF;
       border-radius: 50%;
       width: 48px;
       height: 48px;
       border: none;
       cursor: pointer;
-      color: #121212;
+      color: #f9d71c;
       font-size: 1.4rem;
       display: flex;
       justify-content: center;
@@ -126,22 +132,11 @@
       z-index: 20;
     }
     #themeToggleBtn:hover {
-      background-color: #d4b30b;
-    }
-    /* Confetti canvas fills entire screen */
-    #confetti-canvas {
-      position: fixed;
-      pointer-events: none;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 5;
+      background-color: #0b62d0;
     }
   </style>
 </head>
 <body>
-
   <div class="card" role="main" aria-label="Class of 2026 Countdown">
     <h1>Class of 2026</h1>
     <div class="countdown" id="countdown" aria-live="polite" aria-atomic="true">Loading...</div>
@@ -158,243 +153,152 @@
     <i class="fas fa-moon" aria-hidden="true"></i>
   </button>
 
-  <canvas id="confetti-canvas"></canvas>
+  <script>
+    // Countdown Target Dates
+    const summerDate = new Date('2025-06-01T00:00:00');
+    const gradDate = new Date('2026-06-01T00:00:00');
+    let currentTarget = summerDate;
+    let mode = 'summer'; // or 'grad'
 
-<script>
-(() => {
-  const countdownEl = document.getElementById('countdown');
-  const progressBar = document.getElementById('progressBar');
-  const percentageEl = document.getElementById('percentage');
-  const quipsEl = document.getElementById('quips');
-  const testConfettiBtn = document.getElementById('testConfettiBtn');
-  const switchToGradBtn = document.getElementById('switchToGradBtn');
-  const themeToggleBtn = document.getElementById('themeToggleBtn');
-  const confettiCanvas = document.getElementById('confetti-canvas');
-  const ctx = confettiCanvas.getContext('2d');
+    // Quips
+    const quipsSummer = [
+      "Almost there, summer's calling!",
+      "School's out soon, hang tight!",
+      "Time to soak up the sun soon.",
+      "Countdown to beach days!",
+      "Stay focused, summer's close!"
+    ];
+    const quipsGrad = [
+      "Graduation day is coming!",
+      "Final countdown to the cap & gown!",
+      "Get ready to celebrate!",
+      "Almost alumni status!",
+      "Your future begins soon!"
+    ];
 
-  // Quips arrays
-  const gradQuips = [
-    "Getting ready for the tassel flip...",
-    "Senioritis loading in 3... 2... 1...",
-    "Almost time to toss that cap!",
-    "You've got this, Class of '26!",
-    "Keep grinding—freedom's near!",
-    "Make it count—these are the last laps!",
-    "Dream big, work hard, graduate proud!",
-    "The tassel’s worth the hassle!",
-    "Final countdown: make it legendary!",
-    "One step closer to the stage!"
-  ];
+    // Elements
+    const countdownEl = document.getElementById('countdown');
+    const progressBar = document.getElementById('progressBar');
+    const percentageEl = document.getElementById('percentage');
+    const quipsEl = document.getElementById('quips');
+    const testConfettiBtn = document.getElementById('testConfettiBtn');
+    const switchToGradBtn = document.getElementById('switchToGradBtn');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
 
-  const summerQuips = [
-    "Summer vibes are in full swing!",
-    "Suns out, funs out!",
-    "Time to recharge before the big day!",
-    "Enjoy the sunshine, Class of '26!",
-    "Making memories before the tassel flip!",
-    "Stay cool and dream big!",
-    "Lazy days, bright future!",
-    "Keep shining this summer!",
-    "Relax now, hustle later!",
-    "Summer breeze and bright degrees!"
-  ];
-
-  // Dates
-  const now = new Date();
-  const summerStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // today
-  const summerEnd = new Date(now.getFullYear(), 6, 28); // July 28 same year
-  if (summerEnd < summerStart) {
-    summerEnd.setFullYear(summerEnd.getFullYear() + 1);
-  }
-  const gradDate = new Date(2026, 4, 29); // May 29, 2026
-
-  // State
-  let mode = 'summer'; // or 'grad'
-  let forcedMode = null; // null or 'summer' or 'grad'
-
-  // Theme state
-  function applyTheme(theme) {
-    if (theme === 'light') {
-      document.body.classList.add('light');
-      themeToggleBtn.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i>';
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.body.classList.remove('light');
-      themeToggleBtn.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
-      localStorage.setItem('theme', 'dark');
-    }
-  }
-  // Init theme from localStorage or prefers-color-scheme
-  let savedTheme = localStorage.getItem('theme');
-  if (!savedTheme) {
-    savedTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  }
-  applyTheme(savedTheme);
-
-  themeToggleBtn.addEventListener('click', () => {
-    const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
-    applyTheme(newTheme);
-  });
-
-  // Helper - format remaining time
-  function formatTime(ms) {
-    if (ms <= 0) return "00d 00h 00m 00s";
-    const totalSeconds = Math.floor(ms / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(days).padStart(2,'0')}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
-  }
-
-  // Confetti particle
-  class ConfettiParticle {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.size = 6 + Math.random() * 4;
-      this.speedX = (Math.random() - 0.5) * 3;
-      this.speedY = Math.random() * 4 + 2;
-      this.color = '#f9d71c';
-      this.opacity = 1;
-      this.rotation = Math.random() * 360;
-      this.rotationSpeed = (Math.random() - 0.5) * 10;
-      this.settled = false;
-    }
-    update() {
-      if (!this.settled) {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.rotation += this.rotationSpeed;
-        if (this.y >= window.innerHeight - this.size * 2) {
-          this.y = window.innerHeight - this.size * 2;
-          this.settled = true;
-          this.speedX = 0;
-          this.speedY = 0;
-          this.rotationSpeed = 0;
-        }
+    // Theme functions
+    function applyTheme(theme) {
+      if(theme === 'light') {
+        document.body.classList.add('light');
+        themeToggleBtn.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i>';
+        localStorage.setItem('theme', 'light');
       } else {
-        this.opacity -= 0.015;
-        if (this.opacity < 0) this.opacity = 0;
+        document.body.classList.remove('light');
+        themeToggleBtn.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
+        localStorage.setItem('theme', 'dark');
       }
     }
-    draw(ctx) {
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.rotate(this.rotation * Math.PI / 180);
-      ctx.fillStyle = `rgba(249, 215, 28, ${this.opacity})`; // yellow confetti
-      ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
-      ctx.restore();
-    }
-  }
-
-  let confettiParticles = [];
-  let confettiActive = false;
-
-  function createConfettiExplosion() {
-    confettiParticles = [];
-    const count = 150;
-    for (let i = 0; i < count; i++) {
-      confettiParticles.push(new ConfettiParticle(window.innerWidth/2, window.innerHeight/4));
-    }
-    confettiActive = true;
-  }
-
-  function updateConfetti() {
-    if (!confettiActive) return;
-    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-    confettiParticles.forEach(p => {
-      p.update();
-      p.draw(ctx);
+    let savedTheme = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    applyTheme(savedTheme);
+    themeToggleBtn.addEventListener('click', () => {
+      const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
+      applyTheme(newTheme);
     });
-    confettiParticles = confettiParticles.filter(p => p.opacity > 0);
-    if (confettiParticles.length === 0) {
-      confettiActive = false;
-      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-      cancelAnimationFrame(animationId);
-    } else {
-      animationId = requestAnimationFrame(updateConfetti);
-    }
-  }
 
-  function startConfetti() {
-    if(confettiActive) return; // prevent multiple
-    createConfettiExplosion();
-    animationId = requestAnimationFrame(updateConfetti);
-  }
+    // Countdown & progress update
+    function updateCountdown() {
+      const now = new Date();
+      const totalDuration = currentTarget - (mode === 'grad' ? summerDate : new Date('2025-01-01T00:00:00'));
+      const timeLeft = currentTarget - now;
 
-  // Resize canvas
-  function resizeCanvas() {
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
+      if (timeLeft <= 0) {
+        countdownEl.textContent = "🎉 It's here!";
+        progressBar.value = 100;
+        percentageEl.textContent = "100%";
+        quipsEl.textContent = "";
+        return;
+      }
 
-  // Update countdown + progress + quips
-  function updateCountdown() {
-    const now = new Date();
-    let targetStart, targetEnd, targetName, quipsArray;
+      // Time breakdown
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
+      const seconds = Math.floor((timeLeft / 1000) % 60);
 
-    if(forcedMode === 'summer' || (!forcedMode && now < summerEnd)) {
-      mode = 'summer';
-      targetStart = summerStart;
-      targetEnd = summerEnd;
-      targetName = "Summer Time";
-      quipsArray = summerQuips;
-      switchToGradBtn.textContent = "Switch to Grad Mode";
-    } else {
-      mode = 'grad';
-      targetStart = summerEnd;
-      targetEnd = gradDate;
-      targetName = "Graduation Day";
-      quipsArray = gradQuips;
-      switchToGradBtn.textContent = "Switch to Summer Mode";
+      countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+      // Progress calculation
+      let progressPercent;
+      if(mode === 'summer') {
+        // from Jan 1, 2025 to summerDate
+        const start = new Date('2025-01-01T00:00:00');
+        progressPercent = ((now - start) / (summerDate - start)) * 100;
+      } else {
+        // from summerDate to gradDate
+        progressPercent = ((now - summerDate) / (gradDate - summerDate)) * 100;
+      }
+      progressPercent = Math.min(Math.max(progressPercent, 0), 100);
+      progressBar.value = progressPercent;
+      percentageEl.textContent = `${progressPercent.toFixed(1)}%`;
+
+      // Random quip every update (1 per second)
+      const quipList = mode === 'summer' ? quipsSummer : quipsGrad;
+      const idx = Math.floor(Math.random() * quipList.length);
+      quipsEl.textContent = quipList[idx];
     }
 
-    const totalDuration = targetEnd - targetStart;
-    const elapsed = now - targetStart;
-    const remaining = targetEnd - now;
-
-    // Protect against negative values
-    const clampedElapsed = Math.min(Math.max(elapsed, 0), totalDuration);
-    const progressPercent = (clampedElapsed / totalDuration) * 100;
-
-    countdownEl.textContent = `${targetName} in ${formatTime(remaining)}`;
-    progressBar.value = progressPercent;
-    percentageEl.textContent = `${progressPercent.toFixed(1)}%`;
-
-    // Quip changes every 5 seconds approx
-    const quipIndex = Math.floor(now.getTime() / 5000) % quipsArray.length;
-    quipsEl.textContent = quipsArray[quipIndex];
-
-    // If countdown is done for grad, show confetti
-    if (remaining <= 0 && mode === 'grad' && !confettiActive) {
-      startConfetti();
-    }
-  }
-
-  // Initial call and interval
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-
-  // Button handlers
-  testConfettiBtn.addEventListener('click', () => {
-    startConfetti();
-  });
-
-  switchToGradBtn.addEventListener('click', () => {
-    if (forcedMode === 'summer') {
-      forcedMode = 'grad';
-    } else if (forcedMode === 'grad') {
-      forcedMode = null; // auto mode
-    } else {
-      forcedMode = 'summer';
-    }
+    setInterval(updateCountdown, 1000);
     updateCountdown();
-  });
-})();
-</script>
 
+    // Confetti helper
+    function createConfettiPiece() {
+      const confetti = document.createElement('div');
+      confetti.style.position = 'fixed';
+      confetti.style.width = '10px';
+      confetti.style.height = '10px';
+      confetti.style.backgroundColor = ['#1E90FF', '#f9d71c'][Math.floor(Math.random() * 2)];
+      confetti.style.left = `${Math.random() * window.innerWidth}px`;
+      confetti.style.top = `-10px`;
+      confetti.style.borderRadius = '3px';
+      confetti.style.opacity = 1;
+      confetti.style.zIndex = 1000;
+      confetti.style.pointerEvents = 'none';
+      confetti.style.transition = 'transform 3s linear, opacity 3s ease-out';
+
+      document.body.appendChild(confetti);
+
+      // Animate falling + horizontal drift + fade out
+      const driftX = (Math.random() - 0.5) * 200;
+      confetti.style.transform = `translate(${driftX}px, ${window.innerHeight + 20}px)`;
+      confetti.style.opacity = 0;
+
+      setTimeout(() => {
+        confetti.remove();
+      }, 3000);
+    }
+
+    function launchConfetti(amount = 100) {
+      for(let i=0; i < amount; i++) {
+        setTimeout(createConfettiPiece, i * 10);
+      }
+    }
+
+    testConfettiBtn.addEventListener('click', () => {
+      launchConfetti(150);
+    });
+
+    // Switch modes
+    switchToGradBtn.addEventListener('click', () => {
+      if(mode === 'summer') {
+        mode = 'grad';
+        currentTarget = gradDate;
+        switchToGradBtn.textContent = 'Switch to Summer Mode';
+      } else {
+        mode = 'summer';
+        currentTarget = summerDate;
+        switchToGradBtn.textContent = 'Switch to Grad Mode';
+      }
+      updateCountdown();
+    });
+  </script>
 </body>
 </html>
