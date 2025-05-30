@@ -20,7 +20,7 @@
     .card {
       padding: 2rem;
       border-radius: 12px;
-      max-width: 500px;
+      max-width: 550px;
       text-align: center;
     }
     .time {
@@ -45,10 +45,11 @@
       justify-content: space-between;
       font-size: 0.9rem;
       margin-top: 5px;
-      color: inherit;
     }
-
-    /* Themes */
+    .school-days {
+      margin-top: 1.5rem;
+      font-weight: bold;
+    }
     .day-theme {
       background-color: #f5f5f5;
       color: #333;
@@ -79,6 +80,20 @@
     <h4>Countdown to Class of 2026 Graduation</h4>
     <div class="time" id="countdown">Loading...</div>
     <div class="quip" id="quip">Getting ready for the tassel flip...</div>
+
+    <!-- Grade Selector -->
+    <div class="input-field" style="margin-top: 1rem;">
+      <select id="gradeSelect">
+        <option value="2022-07-28">Freshman</option>
+        <option value="2023-07-28">Sophomore</option>
+        <option value="2024-07-28">Junior</option>
+        <option value="2025-07-28" selected>Senior</option>
+      </select>
+      <label>Select Your Grade Level</label>
+    </div>
+    <div class="school-days" id="schoolDaysLeft">School days left: ...</div>
+
+    <!-- Progress Bar -->
     <div class="progress-container">
       <div class="progress-label" id="progress-percent">0% complete</div>
       <div class="progress">
@@ -94,7 +109,6 @@
   </div>
 
   <script>
-    const startDate = new Date("2022-08-15T00:00:00");
     const graduationDate = new Date("2026-05-29T10:00:00");
     const quips = [
       "Getting ready for the tassel flip...",
@@ -133,9 +147,11 @@
       }
 
       updateProgressBar(now);
+      updateSchoolDays();
     }
 
     function updateProgressBar(currentDate) {
+      const startDate = new Date("2022-07-28");
       const totalDuration = graduationDate - startDate;
       const timeElapsed = currentDate - startDate;
       const progressPercent = Math.min(100, Math.max(0, (timeElapsed / totalDuration) * 100));
@@ -154,11 +170,40 @@
       document.body.classList.add(isNight ? 'night-theme' : 'day-theme');
     }
 
+    function countSchoolDays(start, end) {
+      let count = 0;
+      let date = new Date(start);
+      while (date <= end) {
+        const day = date.getDay();
+        if (day >= 1 && day <= 5) count++; // Monday–Friday only
+        date.setDate(date.getDate() + 1);
+      }
+      return count;
+    }
+
+    function updateSchoolDays() {
+      const selected = document.getElementById('gradeSelect').value;
+      const start = new Date(selected);
+      const now = new Date();
+      const schoolStart = now > start ? now : start;
+      const days = countSchoolDays(schoolStart, graduationDate);
+      document.getElementById('schoolDaysLeft').textContent = `School days left: ${days}`;
+    }
+
     applyTheme();
     updateCountdown();
     rotateQuip();
     setInterval(updateCountdown, 1000);
     setInterval(rotateQuip, 10000);
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const elems = document.querySelectorAll('select');
+      M.FormSelect.init(elems);
+      document.getElementById('gradeSelect').addEventListener('change', updateSchoolDays);
+      updateSchoolDays();
+    });
   </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
