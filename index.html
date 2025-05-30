@@ -48,6 +48,16 @@
       margin: 0 0 0.25em 0;
       font-weight: 700;
     }
+    .countdown-container {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .countdown-text {
+      margin-bottom: 0.2em;
+      font-weight: 600;
+      color: #f9d71c; /* yellow text for the label */
+      font-style: italic;
+    }
     .countdown {
       font-size: 1.8rem;
       min-height: 2.5em;
@@ -122,7 +132,7 @@
       border: none;
       cursor: pointer;
       color: #f9d71c;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -130,6 +140,8 @@
       box-shadow: 0 3px 8px rgba(0,0,0,0.3);
       transition: background-color 0.3s;
       z-index: 20;
+      padding: 0;
+      line-height: 1;
     }
     #themeToggleBtn:hover {
       background-color: #0b62d0;
@@ -139,7 +151,10 @@
 <body>
   <div class="card" role="main" aria-label="Class of 2026 Countdown">
     <h1>Class of 2026</h1>
-    <div class="countdown" id="countdown" aria-live="polite" aria-atomic="true">Loading...</div>
+    <div class="countdown-container" aria-live="polite" aria-atomic="true">
+      <div id="countdownText" class="countdown-text"></div>
+      <div id="countdown" class="countdown"></div>
+    </div>
     <progress id="progressBar" value="0" max="100" aria-label="Progress"></progress>
     <div id="percentage" aria-live="polite" aria-atomic="true">0%</div>
     <div class="quips" id="quips" aria-live="polite" aria-atomic="true"></div>
@@ -178,6 +193,7 @@
 
     // Elements
     const countdownEl = document.getElementById('countdown');
+    const countdownTextEl = document.getElementById('countdownText');
     const progressBar = document.getElementById('progressBar');
     const percentageEl = document.getElementById('percentage');
     const quipsEl = document.getElementById('quips');
@@ -211,6 +227,7 @@
       const timeLeft = currentTarget - now;
 
       if (timeLeft <= 0) {
+        countdownTextEl.textContent = '';
         countdownEl.textContent = "🎉 It's here!";
         progressBar.value = 100;
         percentageEl.textContent = "100%";
@@ -223,6 +240,13 @@
       const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
       const seconds = Math.floor((timeLeft / 1000) % 60);
+
+      // Show label for summer mode
+      if (mode === 'summer') {
+        countdownTextEl.textContent = "Summer ends in";
+      } else {
+        countdownTextEl.textContent = "";
+      }
 
       countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
