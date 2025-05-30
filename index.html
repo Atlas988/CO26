@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -95,17 +94,13 @@
 <body>
   <button id="toggleThemeBtn" class="theme-toggle">
     <i class="fas fa-moon"></i>
-  </button>
-
-  <div class="card">
+  </button>  <div class="card">
     <h1>Class of 2026</h1>
     <div class="countdown" id="countdown">Loading...</div>
     <progress id="progressBar" value="0" max="100"></progress>
     <div class="percent" id="percentDisplay">0%</div>
     <div class="quips" id="quips">Almost there!</div>
-  </div>
-
-  <script>
+  </div>  <script>
     const countdownEl = document.getElementById('countdown');
     const progressBar = document.getElementById('progressBar');
     const quipsEl = document.getElementById('quips');
@@ -149,7 +144,6 @@
     }
 
     function confettiExplosion(particleCount = 150, duration = 2000) {
-      const end = Date.now() + duration;
       const canvas = document.createElement('canvas');
       canvas.style.position = 'fixed';
       canvas.style.top = 0;
@@ -167,20 +161,26 @@
       class Particle {
         constructor() {
           this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height - canvas.height;
+          this.y = -10;
           this.r = Math.random() * 6 + 4;
           this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
-          this.tilt = Math.random() * 10 - 10;
-          this.speed = Math.random() * 3 + 2;
+          this.vy = Math.random() * 3 + 2;
+          this.opacity = 1;
         }
         update() {
-          this.y += this.speed;
+          if (this.y < canvas.height - this.r) {
+            this.y += this.vy;
+          } else {
+            this.opacity -= 0.01;
+          }
         }
         draw() {
+          ctx.globalAlpha = this.opacity;
           ctx.beginPath();
           ctx.fillStyle = this.color;
           ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
           ctx.fill();
+          ctx.globalAlpha = 1;
         }
       }
 
@@ -192,7 +192,7 @@
           p.update();
           p.draw();
         });
-        if (Date.now() < end) {
+        if (particles.some(p => p.opacity > 0)) {
           requestAnimationFrame(animate);
         } else {
           document.body.removeChild(canvas);
@@ -267,6 +267,5 @@
     showQuip();
     setInterval(update, 1000);
     setInterval(showQuip, 6000);
-  </script>
-</body>
+  </script></body>
 </html>
