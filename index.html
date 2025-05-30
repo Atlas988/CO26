@@ -6,109 +6,146 @@
 <title>Class of 2026 Countdown</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+  /* Base styles */
   body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
     background-color: #121212;
     color: #e0e0e0;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: flex-start;
     min-height: 100vh;
     padding: 2rem;
     transition: background-color 0.3s, color 0.3s;
   }
-  h1 {
-    margin-bottom: 0.2em;
-  }
-  .countdown {
-    font-size: 1.8rem;
-    margin: 0.5em 0 0.8em 0;
-    min-height: 2.5em;
-  }
-  .quips {
-    font-style: italic;
-    margin: 0.5em 0 2em 0;
-    min-height: 1.8em;
-    color: #90caf9;
-  }
-  progress {
+
+  /* Card */
+  .card {
+    background-color: #1e1e1e;
+    box-shadow:
+      0 2px 5px rgba(0,0,0,0.26),
+      0 8px 10px rgba(0,0,0,0.16);
+    border-radius: 8px;
+    max-width: 420px;
     width: 100%;
-    max-width: 400px;
-    height: 20px;
-    border-radius: 10px;
-    appearance: none;
-    -webkit-appearance: none;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  /* Heading */
+  h1 {
+    margin: 0 0 0.4rem 0;
+    font-weight: 500;
+    font-size: 2rem;
+  }
+
+  /* Countdown */
+  #countdown {
+    font-size: 2rem;
+    margin: 1rem 0 0.8rem 0;
+    min-height: 2.5rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  /* Quips */
+  #quips {
+    font-style: italic;
+    margin: 1rem 0 2rem 0;
+    color: #64b5f6;
+    min-height: 1.8rem;
+    font-size: 1.1rem;
+  }
+
+  /* Progress bar container */
+  .progress-container {
     background-color: #333;
-    margin-bottom: 1em;
-    transition: background-color 0.3s;
-  }
-  progress::-webkit-progress-bar {
-    background-color: #333;
     border-radius: 10px;
+    height: 16px;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
   }
-  progress::-webkit-progress-value {
+
+  /* Progress bar fill */
+  .progress-bar {
+    height: 100%;
     background-color: #64b5f6;
-    border-radius: 10px;
+    width: 0%;
+    transition: width 0.5s ease;
   }
-  progress::-moz-progress-bar {
-    background-color: #64b5f6;
-    border-radius: 10px;
-  }
-  .theme-toggle {
-    margin-top: auto;
+
+  /* Theme toggle button */
+  #toggleThemeBtn {
     cursor: pointer;
-    padding: 0.5em 1em;
     background-color: #1e88e5;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     color: white;
     font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
     user-select: none;
     transition: background-color 0.3s;
   }
-  .theme-toggle:hover {
+
+  #toggleThemeBtn:hover {
     background-color: #1565c0;
   }
-  /* Light theme */
+
+  /* Light theme overrides */
   body.light {
     background-color: #f5f5f5;
     color: #202020;
   }
-  body.light .quips {
+
+  body.light .card {
+    background-color: #fff;
+    box-shadow:
+      0 2px 5px rgba(0,0,0,0.1),
+      0 8px 10px rgba(0,0,0,0.06);
+  }
+
+  body.light #quips {
     color: #1976d2;
   }
-  body.light progress {
+
+  body.light .progress-container {
     background-color: #ddd;
   }
-  body.light progress::-webkit-progress-bar {
-    background-color: #ddd;
-  }
-  body.light progress::-webkit-progress-value {
+
+  body.light .progress-bar {
     background-color: #1976d2;
   }
-  body.light progress::-moz-progress-bar {
-    background-color: #1976d2;
-  }
-  body.light .theme-toggle {
+
+  body.light #toggleThemeBtn {
     background-color: #1976d2;
     color: white;
   }
-  body.light .theme-toggle:hover {
+
+  body.light #toggleThemeBtn:hover {
     background-color: #0d47a1;
   }
 </style>
 </head>
 <body>
 
-<h1>Class of 2026 Countdown</h1>
+  <div class="card" role="main" aria-label="Class of 2026 Countdown">
+    <h1>Class of 2026 Countdown</h1>
+    <div id="countdown" aria-live="polite" aria-atomic="true">Loading...</div>
 
-<div class="countdown" id="countdown">Loading...</div>
-<progress id="progressBar" value="0" max="100"></progress>
-<div class="quips" id="quips"></div>
+    <div class="progress-container" aria-label="Progress through school year">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
 
-<button class="theme-toggle" id="toggleThemeBtn">Switch to Light Theme</button>
+    <div id="quips" aria-live="polite" aria-atomic="true"></div>
+
+    <button id="toggleThemeBtn" aria-pressed="false" aria-label="Toggle dark or light theme">
+      Switch to Light Theme
+    </button>
+  </div>
 
 <script>
 (() => {
@@ -117,7 +154,6 @@
   const quipsEl = document.getElementById('quips');
   const toggleThemeBtn = document.getElementById('toggleThemeBtn');
 
-  // Quips list (80+ entries)
   const quips = [
     "Getting ready for the tassel flip...",
     "Senioritis loading in 3... 2... 1...",
@@ -207,31 +243,23 @@
     "Keep the hustle alive till the end."
   ];
 
-  // Graduation date: May 29, 2026 at 00:00:00 local time
-  const gradDate = new Date(2026, 4, 29); // months zero-indexed: 4=May
+  const gradDate = new Date(2026, 4, 29); // May 29, 2026 (0-based month)
+  const schoolStart = new Date(2025, 6, 28); // July 28, 2025
 
-  // School year start: July 28, 2025
-  const schoolStart = new Date(2025, 6, 28); // 6=July
-
-  // Format time parts with leading zeros
   function pad(n) {
     return n.toString().padStart(2, '0');
   }
 
-  // Update countdown and progress
   function update() {
     const now = new Date();
-
-    // Time diff until grad
     let diff = gradDate - now;
 
     if (diff <= 0) {
       countdownEl.textContent = "Congratulations, Class of 2026! 🎓";
-      progressBar.value = 100;
+      progressBar.style.width = "100%";
       return;
     }
 
-    // Calculate days, hours, minutes, seconds
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     diff -= days * (1000 * 60 * 60 * 24);
     const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -240,32 +268,31 @@
     diff -= minutes * (1000 * 60);
     const seconds = Math.floor(diff / 1000);
 
-    countdownEl.textContent =
-      `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+    countdownEl.textContent = `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
 
-    // Calculate progress through school year
     const totalDuration = gradDate - schoolStart;
     const elapsed = now - schoolStart;
     let percent = (elapsed / totalDuration) * 100;
     if (percent < 0) percent = 0;
     if (percent > 100) percent = 100;
-    progressBar.value = percent;
+
+    progressBar.style.width = percent + "%";
   }
 
-  // Show a random quip every 6 seconds
   function showQuip() {
     const index = Math.floor(Math.random() * quips.length);
     quipsEl.textContent = quips[index];
   }
 
-  // Theme toggle logic
   function setTheme(dark) {
-    if(dark){
+    if (dark) {
       document.body.classList.remove('light');
       toggleThemeBtn.textContent = 'Switch to Light Theme';
+      toggleThemeBtn.setAttribute('aria-pressed', 'false');
     } else {
       document.body.classList.add('light');
       toggleThemeBtn.textContent = 'Switch to Dark Theme';
+      toggleThemeBtn.setAttribute('aria-pressed', 'true');
     }
     localStorage.setItem('darkTheme', dark ? 'true' : 'false');
   }
@@ -275,7 +302,7 @@
     setTheme(!dark);
   });
 
-  // Initialize theme based on saved preference or default to dark
+  // Initialize theme
   const savedTheme = localStorage.getItem('darkTheme');
   if (savedTheme === 'false') {
     setTheme(false);
@@ -283,7 +310,6 @@
     setTheme(true);
   }
 
-  // Start
   update();
   showQuip();
   setInterval(update, 1000);
