@@ -6,224 +6,162 @@
 <title>Class of 2026 Countdown</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-  :root {
-    --primary-dark: #64b5f6;
-    --primary-light: #1976d2;
-    --bg-dark: #121212;
-    --bg-light: #f5f5f5;
-    --text-dark: #e0e0e0;
-    --text-light: #202020;
-    --card-bg-dark: #1e1e1e;
-    --card-bg-light: #ffffff;
-  }
+
+  /* Base styles */
   body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-dark);
+    background-color: #121212;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  /* Card container with Material elevation */
+  .card {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 100%;
+    box-shadow:
+      0px 3px 5px -1px rgba(0,0,0,0.2),
+      0px 6px 10px 0px rgba(0,0,0,0.14),
+      0px 1px 18px 0px rgba(0,0,0,0.12);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    padding: 2rem 1rem 3rem;
-    transition: background-color 0.3s, color 0.3s;
   }
-  body.light {
-    background-color: var(--bg-light);
-    color: var(--text-light);
-  }
-  body.custom {
-    background-color: #0d47a1;
-    color: #e3f2fd;
-  }
+
   h1 {
-    margin-bottom: 0.3em;
+    margin: 0 0 0.4em 0;
     font-weight: 500;
-  }
-  .card {
-    background-color: var(--card-bg-dark);
-    padding: 1.5rem 2rem;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-    max-width: 400px;
-    width: 100%;
+    font-size: 1.8rem;
     text-align: center;
-    transition: background-color 0.3s, color 0.3s;
-    user-select: none;
   }
-  body.light .card {
-    background-color: var(--card-bg-light);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  body.custom .card {
-    background-color: #1565c0;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-  }
+
   .countdown {
-    font-size: 2rem;
-    margin: 1rem 0 0.5rem;
+    font-size: 1.6rem;
+    margin: 0.6em 0 0.8em 0;
     min-height: 2.5em;
-    font-weight: 600;
+    font-weight: 400;
+    letter-spacing: 0.05em;
   }
+
+  .quips {
+    font-style: italic;
+    margin: 0 0 2em 0;
+    min-height: 1.8em;
+    color: #64b5f6; /* Material Blue 300 */
+    text-align: center;
+  }
+
   progress {
     width: 100%;
-    height: 20px;
-    border-radius: 10px;
+    height: 16px;
+    border-radius: 8px;
     appearance: none;
     -webkit-appearance: none;
     background-color: #333;
-    margin-bottom: 1.5rem;
-    transition: background-color 0.3s;
+    margin-bottom: 1.8em;
+    overflow: hidden;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
   }
   progress::-webkit-progress-bar {
     background-color: #333;
-    border-radius: 10px;
   }
   progress::-webkit-progress-value {
-    background-color: var(--primary-dark);
-    border-radius: 10px;
-    transition: width 0.5s ease;
+    background-color: #64b5f6;
+    border-radius: 8px;
+    transition: width 0.3s ease;
   }
   progress::-moz-progress-bar {
-    background-color: var(--primary-dark);
-    border-radius: 10px;
+    background-color: #64b5f6;
+    border-radius: 8px;
+    transition: width 0.3s ease;
+  }
+
+  .theme-toggle {
+    cursor: pointer;
+    padding: 0.6em 1.2em;
+    background-color: #64b5f6;
+    border: none;
+    border-radius: 20px;
+    color: #121212;
+    font-weight: 600;
+    font-size: 1rem;
+    user-select: none;
+    box-shadow:
+      0px 3px 5px -1px rgba(100, 181, 246, 0.4),
+      0px 6px 10px 0px rgba(100, 181, 246, 0.3),
+      0px 1px 18px 0px rgba(100, 181, 246, 0.2);
+    transition: background-color 0.3s ease;
+  }
+  .theme-toggle:hover {
+    background-color: #42a5f5;
+  }
+
+  /* Light theme overrides */
+  body.light {
+    background-color: #f5f5f5;
+    color: #202020;
+  }
+  body.light .card {
+    background-color: #fff;
+    box-shadow:
+      0px 3px 5px -1px rgba(0,0,0,0.2),
+      0px 6px 10px 0px rgba(0,0,0,0.14),
+      0px 1px 18px 0px rgba(0,0,0,0.12);
+  }
+  body.light .quips {
+    color: #1976d2; /* Material Blue 700 */
   }
   body.light progress {
     background-color: #ddd;
+    box-shadow: none;
   }
   body.light progress::-webkit-progress-bar {
     background-color: #ddd;
   }
   body.light progress::-webkit-progress-value {
-    background-color: var(--primary-light);
+    background-color: #1976d2;
   }
   body.light progress::-moz-progress-bar {
-    background-color: var(--primary-light);
+    background-color: #1976d2;
   }
-  body.custom progress {
-    background-color: #0d47a1;
-  }
-  body.custom progress::-webkit-progress-bar {
-    background-color: #0d47a1;
-  }
-  body.custom progress::-webkit-progress-value {
-    background-color: #82b1ff;
-  }
-  body.custom progress::-moz-progress-bar {
-    background-color: #82b1ff;
-  }
-  .quips {
-    font-style: italic;
-    margin: 0.5em 0 2em 0;
-    min-height: 2em;
-    color: var(--primary-dark);
-    font-weight: 500;
-    user-select: none;
-  }
-  body.light .quips {
-    color: var(--primary-light);
-  }
-  body.custom .quips {
-    color: #bbdefb;
-  }
-  /* Buttons container */
-  .btn-group {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  button, select {
-    background-color: var(--primary-dark);
-    border: none;
-    border-radius: 6px;
+  body.light .theme-toggle {
+    background-color: #1976d2;
     color: white;
-    padding: 0.6em 1.2em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    user-select: none;
-    font-size: 1rem;
+    box-shadow:
+      0px 3px 5px -1px rgba(25, 118, 210, 0.4),
+      0px 6px 10px 0px rgba(25, 118, 210, 0.3),
+      0px 1px 18px 0px rgba(25, 118, 210, 0.2);
   }
-  button:hover, select:hover {
-    background-color: var(--primary-light);
-  }
-  body.light button, body.light select {
-    background-color: var(--primary-light);
-    color: white;
-  }
-  body.light button:hover, body.light select:hover {
-    background-color: var(--primary-dark);
-  }
-  body.custom button, body.custom select {
-    background-color: #82b1ff;
-    color: #0d47a1;
-  }
-  body.custom button:hover, body.custom select:hover {
-    background-color: #bbdefb;
-  }
-  /* Share buttons smaller on mobile */
-  @media (max-width: 400px) {
-    button, select {
-      flex: 1 1 100%;
-    }
-  }
-  /* Swipe instructions for mobile */
-  .swipe-info {
-    font-size: 0.9rem;
-    color: var(--primary-dark);
-    margin-bottom: 1rem;
-    user-select: none;
-  }
-  body.light .swipe-info {
-    color: var(--primary-light);
-  }
-  body.custom .swipe-info {
-    color: #bbdefb;
+  body.light .theme-toggle:hover {
+    background-color: #0d47a1;
   }
 </style>
 </head>
 <body>
 
-<h1>Class of 2026 Countdown</h1>
-<div class="card" id="card" role="region" aria-live="polite" aria-atomic="true">
-
-  <div class="countdown" id="countdown">Loading...</div>
-  <progress id="progressBar" value="0" max="100" aria-label="Progress towards graduation"></progress>
-  <div class="quips" id="quips">Loading quip...</div>
-
-  <div class="swipe-info" id="swipeInfo">Swipe quips ← → on mobile</div>
-
-  <div class="btn-group" role="group" aria-label="Controls">
-    <button id="addCalendarBtn" aria-label="Add graduation date to calendar">Add to Calendar</button>
-    <button id="shareTwitter" aria-label="Share countdown on Twitter">Share Twitter</button>
-    <button id="shareFacebook" aria-label="Share countdown on Facebook">Share Facebook</button>
-    <button id="copyText" aria-label="Copy countdown text">Copy Text</button>
+  <div class="card" role="main" aria-label="Class of 2026 Countdown">
+    <h1>Class of 2026 Countdown</h1>
+    <div class="countdown" id="countdown">Loading...</div>
+    <progress id="progressBar" value="0" max="100" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></progress>
+    <div class="quips" id="quips"></div>
+    <button class="theme-toggle" id="toggleThemeBtn" aria-pressed="false" aria-label="Toggle light and dark theme">Switch to Light Theme</button>
   </div>
-
-  <div style="margin-top:1rem;">
-    <label for="themeSelect" style="font-weight:600;">Select Theme:</label>
-    <select id="themeSelect" aria-label="Select theme">
-      <option value="dark">Dark</option>
-      <option value="light">Light</option>
-      <option value="custom">Custom Blue</option>
-    </select>
-  </div>
-
-</div>
 
 <script>
 (() => {
   const countdownEl = document.getElementById('countdown');
   const progressBar = document.getElementById('progressBar');
   const quipsEl = document.getElementById('quips');
-  const addCalendarBtn = document.getElementById('addCalendarBtn');
-  const shareTwitterBtn = document.getElementById('shareTwitter');
-  const shareFacebookBtn = document.getElementById('shareFacebook');
-  const copyTextBtn = document.getElementById('copyText');
-  const themeSelect = document.getElementById('themeSelect');
-  const swipeInfo = document.getElementById('swipeInfo');
+  const toggleThemeBtn = document.getElementById('toggleThemeBtn');
 
   const quips = [
     "Getting ready for the tassel flip...",
@@ -238,14 +176,80 @@
     "Make it count—these are the last laps!",
     "Dream big, work hard, graduate proud!",
     "Every day is a step closer to glory.",
-    "The tassle’s worth the hassle!",
+    "The tassel’s worth the hassle!",
     "Books today, success tomorrow.",
     "Final countdown: make it legendary!",
     "Almost there, no time to slack!",
     "Senior year vibes: hustle and heart.",
     "Turn those late nights into bright futures.",
     "Stay focused, finish strong!",
-    "One step closer to the stage!"
+    "One step closer to the stage!",
+    "Hustle in silence, graduate with pride.",
+    "Your future is calling—answer it!",
+    "Keep calm and graduate on.",
+    "From freshmen fears to senior cheers!",
+    "One cap, one gown, one epic day.",
+    "Knowledge is your superpower.",
+    "Late nights today, bright days tomorrow.",
+    "Your success story starts here.",
+    "Keep the fire burning till the end.",
+    "Dream it. Believe it. Achieve it.",
+    "Counting down the days till you soar.",
+    "Chasing dreams and deadlines alike.",
+    "The best is yet to come.",
+    "Almost there—finish line in sight!",
+    "Good things come to those who graduate.",
+    "The tassel moves one way, success the other.",
+    "Keep your head high and your goals higher.",
+    "Your journey is just beginning.",
+    "Make these last days unforgettable!",
+    "Celebrate every small victory.",
+    "Stay hungry, stay foolish, graduate smart!",
+    "School’s out forever—almost!",
+    "One more year to change the world.",
+    "You’re the author of your own success story.",
+    "Keep your eyes on the prize.",
+    "You’ve got the power to make it happen.",
+    "Turn your dreams into plans.",
+    "The tassel was worth every struggle.",
+    "Almost time to shine on that stage!",
+    "Write your legacy one day at a time.",
+    "Class of '26: legends in the making.",
+    "Hard work pays off—just wait.",
+    "The future is yours—grab it!",
+    "Keep pushing, keep climbing, keep thriving.",
+    "Finish strong, start stronger.",
+    "This is your moment—own it.",
+    "Cap, gown, greatness awaits.",
+    "Here’s to the nights that turned into memories.",
+    "Stay true, stay you, graduate proud.",
+    "Success is a journey, not a destination.",
+    "Keep dreaming, keep doing, keep going.",
+    "Your story is just getting good.",
+    "Late nights, early mornings, all worth it.",
+    "Every step forward is progress.",
+    "One tassel to rule them all.",
+    "Good vibes and grad vibes only.",
+    "Rise up, Class of 2026!",
+    "Almost there, don’t stop now.",
+    "Knowledge today, leaders tomorrow.",
+    "Chase your dreams, not the clock.",
+    "From books to big moves.",
+    "Countdown to memories that last forever.",
+    "Stay focused, stay fierce.",
+    "Cap-tivating moments ahead.",
+    "Graduation: where hard work meets celebration.",
+    "Make history, Class of '26!",
+    "Keep calm and carry on graduating.",
+    "Onward and upward, always.",
+    "Your time is now—shine bright.",
+    "School’s last call: answer proudly.",
+    "Class of 2026, the future’s finest.",
+    "More than a year — a journey.",
+    "Stay curious, stay unstoppable.",
+    "Almost time to fly free!",
+    "Let your dreams take flight.",
+    "Keep the hustle alive till the end."
   ];
 
   const gradDate = new Date(2026, 4, 29);
@@ -260,8 +264,9 @@
     let diff = gradDate - now;
 
     if (diff <= 0) {
-      countdownEl.textContent = "🎓 Congratulations, Class of 2026! 🎉";
+      countdownEl.textContent = "Congratulations, Class of 2026! 🎓";
       progressBar.value = 100;
+      progressBar.setAttribute('aria-valuenow', 100);
       return;
     }
 
@@ -273,143 +278,52 @@
     diff -= minutes * (1000 * 60);
     const seconds = Math.floor(diff / 1000);
 
-    countdownEl.textContent = `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+    countdownEl.textContent =
+      `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
 
     const totalDuration = gradDate - schoolStart;
     const elapsed = now - schoolStart;
     let percent = (elapsed / totalDuration) * 100;
-    percent = Math.min(Math.max(percent, 0), 100);
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
     progressBar.value = percent;
+    progressBar.setAttribute('aria-valuenow', percent.toFixed(0));
   }
 
-  // Quips and swipe support
-  let quipIndex = 0;
-  function showQuip(index) {
-    quipIndex = (index + quips.length) % quips.length;
-    quipsEl.textContent = quips[quipIndex];
+  function showQuip() {
+    const index = Math.floor(Math.random() * quips.length);
+    quipsEl.textContent = quips[index];
   }
 
-  let autoRotateInterval;
-
-  function startAutoRotate() {
-    autoRotateInterval = setInterval(() => {
-      showQuip(quipIndex + 1);
-    }, 6000);
-  }
-
-  function stopAutoRotate() {
-    clearInterval(autoRotateInterval);
-  }
-
-  let touchStartX = 0;
-  let touchEndX = 0;
-
-  function handleGesture() {
-    const swipeThreshold = 50;
-    if (touchEndX + swipeThreshold < touchStartX) {
-      showQuip(quipIndex + 1);
-    }
-    if (touchEndX - swipeThreshold > touchStartX) {
-      showQuip(quipIndex - 1);
-    }
-  }
-
-  if ('ontouchstart' in window) {
-    swipeInfo.style.display = 'block';
-    quipsEl.addEventListener('touchstart', e => {
-      stopAutoRotate();
-      touchStartX = e.changedTouches[0].screenX;
-    });
-    quipsEl.addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleGesture();
-      startAutoRotate();
-    });
-  } else {
-    swipeInfo.style.display = 'none';
-    startAutoRotate();
-  }
-
-  addCalendarBtn.addEventListener('click', () => {
-    const title = encodeURIComponent("Class of 2026 Graduation");
-    const details = encodeURIComponent("Celebrate the Class of 2026 graduation day!");
-    const location = encodeURIComponent("Your School Location");
-    const start = "20260529T000000";
-    const end = "20260529T235959";
-
-    const googleCalUrl = `https://calendar.google.com/calendar/r/eventedit?text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
-
-    const icsContent = 
-`BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:Class of 2026 Graduation
-DTSTART:${start}
-DTEND:${end}
-DESCRIPTION:Celebrate the Class of 2026 graduation day!
-LOCATION:Your School Location
-END:VEVENT
-END:VCALENDAR`;
-
-    const blob = new Blob([icsContent], {type: 'text/calendar'});
-    const icsUrl = URL.createObjectURL(blob);
-
-    if (confirm("Add to Google Calendar? (OK = Google Calendar, Cancel = Download .ics file)")) {
-      window.open(googleCalUrl, '_blank');
+  function setTheme(dark) {
+    if(dark){
+      document.body.classList.remove('light');
+      toggleThemeBtn.textContent = 'Switch to Light Theme';
+      toggleThemeBtn.setAttribute('aria-pressed', 'false');
     } else {
-      const a = document.createElement('a');
-      a.href = icsUrl;
-      a.download = 'class_of_2026_graduation.ics';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(icsUrl);
-    }
-  });
-
-  shareTwitterBtn.addEventListener('click', () => {
-    const text = encodeURIComponent("Counting down to Class of 2026 Graduation! 🎓 #ClassOf2026");
-    const url = encodeURIComponent(window.location.href);
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-    window.open(twitterUrl, '_blank');
-  });
-
-  shareFacebookBtn.addEventListener('click', () => {
-    const url = encodeURIComponent(window.location.href);
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-    window.open(facebookUrl, '_blank');
-  });
-
-  copyTextBtn.addEventListener('click', () => {
-    const text = countdownEl.textContent + " — Class of 2026 Graduation Countdown!";
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Countdown text copied to clipboard!');
-    }).catch(() => alert('Failed to copy text.'));
-  });
-
-  function applyTheme(theme) {
-    document.body.classList.remove('light', 'custom');
-    if (theme === 'light') {
       document.body.classList.add('light');
-    } else if (theme === 'custom') {
-      document.body.classList.add('custom');
+      toggleThemeBtn.textContent = 'Switch to Dark Theme';
+      toggleThemeBtn.setAttribute('aria-pressed', 'true');
     }
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('darkTheme', dark ? 'true' : 'false');
   }
 
-  themeSelect.addEventListener('change', (e) => {
-    applyTheme(e.target.value);
+  toggleThemeBtn.addEventListener('click', () => {
+    const dark = !document.body.classList.contains('light');
+    setTheme(!dark);
   });
 
-  // Load saved theme or default to dark
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  applyTheme(savedTheme);
-  themeSelect.value = savedTheme;
+  const savedTheme = localStorage.getItem('darkTheme');
+  if (savedTheme === 'false') {
+    setTheme(false);
+  } else {
+    setTheme(true);
+  }
 
-  // Initial update & interval
   update();
+  showQuip();
   setInterval(update, 1000);
-  showQuip(quipIndex);
+  setInterval(showQuip, 6000);
 })();
 </script>
 
