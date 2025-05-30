@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Class of 2026</title>
 
-<!-- Font Awesome CSS -->
+<!-- Font Awesome -->
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -142,24 +142,6 @@
   body.light .theme-toggle:hover {
     background-color: #0d47a1;
   }
-
-  /* Confetti styles */
-  .confetti {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    pointer-events: none;
-    opacity: 1;
-    animation: fly 1.2s forwards;
-  }
-
-  @keyframes fly {
-    to {
-      transform: translate(var(--x), var(--y)) rotate(var(--r));
-      opacity: 0;
-    }
-  }
 </style>
 </head>
 <body>
@@ -175,13 +157,15 @@
   <i class="fas fa-moon"></i> Dark Mode
 </button>
 
+<!-- Load canvas-confetti library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <script>
 (() => {
   const countdownEl = document.getElementById('countdown');
   const progressBar = document.getElementById('progressBar');
   const quipsEl = document.getElementById('quips');
   const toggleThemeBtn = document.getElementById('toggleThemeBtn');
-  const card = document.querySelector('.card');
 
   const quips = [
     "Getting ready for the tassel flip...",
@@ -279,41 +263,33 @@
     return n.toString().padStart(2, '0');
   }
 
-  function randomRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  function createConfetti() {
-    const colors = ['#FFC107', '#4CAF50', '#2196F3', '#E91E63', '#FF5722', '#9C27B0', '#00BCD4'];
-
-    for (let i = 0; i < 30; i++) {
-      const confetti = document.createElement('div');
-      confetti.classList.add('confetti');
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-      // Start near center top of card
-      confetti.style.left = '50%';
-      confetti.style.top = '20%';
-
-      // Random trajectory: translateX and translateY and rotation degrees
-      const x = randomRange(-150, 150) + 'px';
-      const y = randomRange(-150, 150) + 'px';
-      const r = randomRange(0, 720) + 'deg';
-
-      confetti.style.setProperty('--x', x);
-      confetti.style.setProperty('--y', y);
-      confetti.style.setProperty('--r', r);
-
-      card.appendChild(confetti);
-
-      // Remove after animation
-      confetti.addEventListener('animationend', () => {
-        confetti.remove();
-      });
-    }
-  }
-
   let lastMinute = null;
+
+  // Confetti function using canvas-confetti lib
+  function confettiExplosion() {
+    const duration = 1500;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 5 * (timeLeft / duration);
+      // since particles fall down, origin x varies randomly across screen width
+      confetti(Object.assign({}, defaults, {
+        particleCount,
+        origin: { x: Math.random(), y: Math.random() * 0.6 }
+      }));
+    }, 250);
+  }
 
   function update() {
     const now = new Date();
@@ -348,7 +324,7 @@
 
     if (minutes !== lastMinute) {
       lastMinute = minutes;
-      createConfetti();
+      confettiExplosion();
     }
   }
 
