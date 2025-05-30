@@ -4,10 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Class of 2026 Countdown</title>
-  <!-- Materialize CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
       font-family: 'Roboto', sans-serif;
@@ -37,8 +36,19 @@
     .progress-container {
       margin-top: 2rem;
     }
+    .progress-label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .milestones {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-top: 5px;
+      color: inherit;
+    }
 
-    /* Day Theme */
+    /* Themes */
     .day-theme {
       background-color: #f5f5f5;
       color: #333;
@@ -46,8 +56,6 @@
     .day-theme .card {
       background: white;
     }
-
-    /* Night Theme */
     .night-theme {
       background-color: #121212;
       color: #eee;
@@ -72,17 +80,22 @@
     <div class="time" id="countdown">Loading...</div>
     <div class="quip" id="quip">Getting ready for the tassel flip...</div>
     <div class="progress-container">
-      <p>Progress toward graduation:</p>
+      <div class="progress-label" id="progress-percent">0% complete</div>
       <div class="progress">
         <div class="determinate" id="progress-bar" style="width: 0%"></div>
+      </div>
+      <div class="milestones">
+        <span>🟢 Freshman</span>
+        <span>🔵 Sophomore</span>
+        <span>🟣 Junior</span>
+        <span>🔴 Senior</span>
       </div>
     </div>
   </div>
 
   <script>
-    const startDate = new Date("2022-08-15T00:00:00"); // Start of freshman year
-    const graduationDate = new Date("2026-05-29T10:00:00"); // Graduation day
-
+    const startDate = new Date("2022-08-15T00:00:00");
+    const graduationDate = new Date("2026-05-29T10:00:00");
     const quips = [
       "Getting ready for the tassel flip...",
       "Senioritis loading in 3... 2... 1...",
@@ -97,6 +110,7 @@
     ];
 
     let quipIndex = 0;
+    let hasCelebrated = false;
 
     function updateCountdown() {
       const now = new Date();
@@ -107,10 +121,16 @@
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const seconds = totalSeconds % 60;
 
-      document.getElementById('countdown').textContent =
-        totalSeconds > 0
-          ? `${days}d ${hours}h ${minutes}m ${seconds}s`
-          : "🎓 Congratulations, Class of 2026!";
+      const countdownEl = document.getElementById('countdown');
+      if (totalSeconds > 0) {
+        countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      } else {
+        countdownEl.textContent = "🎓 Congratulations, Class of 2026!";
+        if (!hasCelebrated) {
+          confetti({ particleCount: 300, spread: 120 });
+          hasCelebrated = true;
+        }
+      }
 
       updateProgressBar(now);
     }
@@ -120,6 +140,7 @@
       const timeElapsed = currentDate - startDate;
       const progressPercent = Math.min(100, Math.max(0, (timeElapsed / totalDuration) * 100));
       document.getElementById('progress-bar').style.width = progressPercent.toFixed(2) + "%";
+      document.getElementById('progress-percent').textContent = progressPercent.toFixed(1) + "% complete";
     }
 
     function rotateQuip() {
@@ -139,8 +160,5 @@
     setInterval(updateCountdown, 1000);
     setInterval(rotateQuip, 10000);
   </script>
-
-  <!-- Materialize JS (optional) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
