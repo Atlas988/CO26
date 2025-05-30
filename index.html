@@ -89,7 +89,7 @@
     body.day-theme .determinate {
       background-color: #1976d2;
     }
-    /* Dark theme overrides (re-assert just in case) */
+    /* Dark theme overrides */
     body.night-theme {
       background-color: #121212;
       color: #eee;
@@ -109,7 +109,6 @@
     body.night-theme .determinate {
       background-color: #42a5f5;
     }
-
     /* Theme toggle button */
     #theme-toggle {
       margin-top: 15px;
@@ -126,7 +125,6 @@
     #theme-toggle:hover {
       background-color: #1e88e5;
     }
-
     /* Motivational quote */
     #daily-quote {
       margin-top: 20px;
@@ -143,26 +141,25 @@
   </style>
 </head>
 <body class="night-theme">
-  <div class="card z-depth-3">
+  <div class="card z-depth-3" role="main" aria-label="Countdown to Class of 2026 Graduation">
     <h4>Countdown to Class of 2026 Graduation</h4>
-    <div class="time" id="countdown">Loading...</div>
-    <div class="quip" id="quip">Getting ready for the tassel flip...</div>
-
-    <!-- Progress Bar -->
-    <div class="progress-container">
+    <div class="time" id="countdown" aria-live="polite" aria-atomic="true">Loading...</div>
+    <div class="quip" id="quip" aria-live="polite" aria-atomic="true">Getting ready for the tassel flip...</div>
+    <div class="progress-container" aria-label="Graduation progress">
       <div class="progress-label" id="progress-percent">0% complete</div>
-      <div class="progress">
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="determinate" id="progress-bar" style="width: 0%"></div>
       </div>
     </div>
   </div>
 
-  <button id="theme-toggle" aria-label="Toggle Dark/Light Theme">Toggle Theme</button>
+  <button id="theme-toggle" aria-label="Toggle Dark or Light Theme">Toggle Theme</button>
 
-  <div id="daily-quote" aria-live="polite"></div>
+  <div id="daily-quote" aria-live="polite" aria-atomic="true"></div>
 
   <script>
     const graduationDate = new Date("2026-05-29T10:00:00");
+    const startDate = new Date("2022-07-28");
 
     const quips = [
       "Getting ready for the tassel flip...",
@@ -177,7 +174,6 @@
       "Make it count—these are the last laps!"
     ];
 
-    // Motivational quotes array (one for each day, can add more)
     const motivationalQuotes = [
       "Believe you can and you're halfway there.",
       "Every accomplishment starts with the decision to try.",
@@ -194,6 +190,7 @@
     let quipIndex = 0;
     let hasCelebrated = false;
     let manualTheme = null; // null means auto, 'day' or 'night' means manual
+    let lastConfettiMinute = null;
 
     function updateCountdown() {
       const now = new Date();
@@ -207,10 +204,16 @@
       const countdownEl = document.getElementById('countdown');
       if (totalSeconds > 0) {
         countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+        // Confetti every full minute (only once per minute)
+        if (seconds === 0 && lastConfettiMinute !== minutes) {
+          confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+          lastConfettiMinute = minutes;
+        }
       } else {
         countdownEl.textContent = "🎓 Congratulations, Class of 2026!";
         if (!hasCelebrated) {
-          confetti({ particleCount: 300, spread: 120 });
+          confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
           hasCelebrated = true;
         }
       }
@@ -219,13 +222,13 @@
     }
 
     function updateProgressBar(currentDate) {
-      const startDate = new Date("2022-07-28");
       const totalDuration = graduationDate - startDate;
       const timeElapsed = currentDate - startDate;
-      const progressPercent = Math.min(100, Math.max(0, (timeElapsed / totalDuration) * 100));
+      let progressPercent = Math.min(100, Math.max(0, (timeElapsed / totalDuration) * 100));
       const progressBar = document.getElementById('progress-bar');
       progressBar.style.width = progressPercent.toFixed(2) + "%";
       document.getElementById('progress-percent').textContent = progressPercent.toFixed(1) + "% complete";
+      progressBar.parentElement.setAttribute('aria-valuenow', progressPercent.toFixed(1));
     }
 
     function fadeQuip() {
@@ -239,7 +242,6 @@
     }
 
     function updateDailyQuote() {
-      // Pick quote based on day of year (0-9 cycle)
       const now = new Date();
       const startOfYear = new Date(now.getFullYear(), 0, 0);
       const diff = now - startOfYear;
@@ -251,4 +253,50 @@
       quoteEl.style.opacity = 0;
       setTimeout(() => {
         quoteEl.textContent = `"${quote}"`;
-        quoteEl
+        quoteEl.style.opacity = 1;
+      }, 800);
+    }
+
+    function applyTheme() {
+      if (manualTheme) {
+        // Manual override
+        document.body.classList.remove('day-theme', 'night-theme');
+        document.body.classList.add(manualTheme === 'day' ? 'day-theme' : 'night-theme');
+        return;
+      }
+
+      const hour = new Date().getHours();
+      document.body.classList.remove('day-theme', 'night-theme');
+      if (hour >= 6 && hour < 18) {
+        document.body.classList.add('day-theme');
+      } else {
+        document.body.classList.add('night-theme');
+      }
+    }
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      if (!manualTheme) {
+        // Toggle based on current
+        manualTheme = document.body.classList.contains('day-theme') ? 'night' : 'day';
+      } else {
+        manualTheme = manualTheme === 'day' ? 'night' : 'day';
+      }
+      applyTheme();
+    });
+
+    // Initial load
+    applyTheme();
+    updateCountdown();
+    fadeQuip();
+    updateDailyQuote();
+
+    // Intervals
+    setInterval(updateCountdown, 1000);
+    setInterval(fadeQuip, 10000);
+    setInterval(updateDailyQuote, 60000); // update quote every minute (optional)
+
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
