@@ -55,7 +55,7 @@
     }
     .quips {
       font-style: italic;
-      color: #f9d71c; /* bright yellow */
+      color: #f9d71c; /* bright yellow for quips */
       min-height: 1.8em;
     }
     progress {
@@ -73,17 +73,17 @@
       border-radius: 10px;
     }
     progress::-webkit-progress-value {
-      background-color: #f9d71c;
+      background-color: #1E90FF; /* bright blue for progress fill */
       border-radius: 10px;
     }
     progress::-moz-progress-bar {
-      background-color: #f9d71c;
+      background-color: #1E90FF;
       border-radius: 10px;
     }
     #percentage {
       font-weight: 600;
       font-size: 1.1rem;
-      color: #f9d71c;
+      color: #1E90FF; /* blue percentage text */
     }
     .btn-group {
       display: flex;
@@ -92,24 +92,24 @@
       margin-top: 0.5rem;
     }
     button {
-      background-color: #f9d71c;
+      background-color: #1E90FF; /* blue buttons */
       border: none;
       border-radius: 24px;
       padding: 0.6em 1.5em;
       font-weight: 600;
       cursor: pointer;
-      color: #121212;
+      color: #fff;
       transition: background-color 0.3s;
       user-select: none;
     }
     button:hover {
-      background-color: #d4b30b;
+      background-color: #0b62d0; /* darker blue on hover */
     }
     #themeToggleBtn {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background-color: #f9d71c;
+      background-color: #f9d71c; /* yellow toggle button */
       border-radius: 50%;
       width: 48px;
       height: 48px;
@@ -282,7 +282,7 @@
       ctx.save();
       ctx.translate(this.x, this.y);
       ctx.rotate(this.rotation * Math.PI / 180);
-      ctx.fillStyle = `rgba(249, 215, 28, ${this.opacity})`;
+      ctx.fillStyle = `rgba(249, 215, 28, ${this.opacity})`; // yellow confetti
       ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
       ctx.restore();
     }
