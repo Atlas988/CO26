@@ -200,209 +200,131 @@
   </button>
 
   <script>
-    const graduationDate = new Date("2026-05-29T10:00:00");
-    const schoolStartDate = new Date("2025-07-28T00:00:00");
-    const summerStartDate = new Date("2025-05-30T00:00:00");
-    const summerEndDate = new Date("2025-07-28T00:00:00");
+const graduationQuips = [
+  "Getting ready for the tassel flip...",
+  "Senioritis loading in 3... 2... 1...",
+  "College apps and coffee, anyone?",
+  "Remember when 2026 felt forever away?",
+  "Almost time to toss that cap!",
+  "Is it too early to cry happy tears?",
+  "Caps, gowns, and goodbyes coming soon.",
+  "You've got this, Class of '26!",
+  "Keep grinding—freedom's near!",
+  "Make it count—these are the last laps!"
+];
 
-    const quips = [
-      "Getting ready for the tassel flip...",
-      "Senioritis loading in 3... 2... 1...",
-      "College apps and coffee, anyone?",
-      "Remember when 2026 felt forever away?",
-      "Almost time to toss that cap!",
-      "Is it too early to cry happy tears?",
-      "Caps, gowns, and goodbyes coming soon.",
-      "You've got this, Class of '26!",
-      "Keep grinding—freedom's near!",
-      "Make it count—these are the last laps!"
-    ];
+const summerQuips = [
+  "Summer vibes loading...",
+  "Time to soak up the sun!",
+  "School's out, fun's in!",
+  "Don’t forget the sunscreen!",
+  "BBQs and beach days await.",
+  "Summer’s countdown is on!",
+  "Make every day a holiday.",
+  "Relax, recharge, repeat.",
+  "Adventure is calling!",
+  "Savor those long, warm evenings."
+];
 
-    const motivationalQuotes = [
-      "Believe you can and you're halfway there.",
-      "Every accomplishment starts with the decision to try.",
-      "Don't watch the clock; do what it does. Keep going.",
-      "Success is the sum of small efforts repeated day in and day out.",
-      "Dream big. Work hard. Stay focused.",
-      "The future belongs to those who believe in the beauty of their dreams.",
-      "Push yourself, because no one else is going to do it for you.",
-      "Mistakes are proof that you are trying.",
-      "Success doesn’t come from what you do occasionally, it comes from what you do consistently.",
-      "Your limitation—it’s only your imagination."
-    ];
+const graduationDate = new Date("2026-05-29T10:00:00");
+const summerStartDate = new Date("2025-05-30T00:00:00");
+const summerEndDate = new Date("2025-07-28T00:00:00");
 
-    let currentMode = 'graduation'; // or 'summer'
-    let quipIndex = 0;
-    let hasCelebrated = false;
-    let lastConfettiMinute = null;
-    let manualTheme = 'night';
+let currentMode = 'graduation'; // 'graduation' or 'summer'
+let quipIndex = 0;
+let quips = graduationQuips;
+let lastConfettiMinute = null;
+let hasCelebrated = false;
 
-    // Helper to get full days between ignoring time-of-day issues
-    function daysBetween(date1, date2) {
-      const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
-      const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
-      const msPerDay = 24 * 60 * 60 * 1000;
-      return Math.floor((utc2 - utc1) / msPerDay);
+function updateCountdown() {
+  const now = new Date();
+  let targetDate, startDate, modeLabel;
+
+  if (currentMode === 'graduation') {
+    targetDate = graduationDate;
+    startDate = new Date("2025-07-28T00:00:00"); // adjust as needed
+    modeLabel = "Graduation in";
+  } else {
+    targetDate = summerEndDate;
+    startDate = summerStartDate;
+    modeLabel = "Summer ends in";
+  }
+
+  const diff = targetDate - now;
+  if (diff <= 0) {
+    document.getElementById("mode-title").textContent = "🎉 It's time!";
+    document.getElementById("countdown").textContent = currentMode === 'graduation' ? "🎓 Congratulations!" : "☀️ Summer's over!";
+    if (!hasCelebrated) {
+      confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
+      hasCelebrated = true;
     }
+    document.getElementById("progress-bar").style.width = "100%";
+    document.getElementById("progress-percent").textContent = "100% complete";
+    return;
+  } else {
+    hasCelebrated = false;
+    document.getElementById("mode-title").textContent = modeLabel;
+  }
 
-    function updateCountdown() {
-      const now = new Date();
-      let targetDate, startDate, modeLabel;
+  let secondsLeft = Math.floor(diff / 1000);
+  const days = Math.floor(secondsLeft / (24 * 3600));
+  secondsLeft %= (24 * 3600);
+  const hours = Math.floor(secondsLeft / 3600);
+  secondsLeft %= 3600;
+  const minutes = Math.floor(secondsLeft / 60);
+  const seconds = secondsLeft % 60;
 
-      if (currentMode === 'graduation') {
-        targetDate = graduationDate;
-        startDate = schoolStartDate;
-        modeLabel = "Graduation in";
-      } else {
-        targetDate = summerEndDate;
-        startDate = summerStartDate;
-        modeLabel = "Summer ends in";
-      }
+  document.getElementById("countdown").textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-      // Strip times for days calculation to get full days left
-      const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const targetDateOnly = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+  if (seconds === 0 && lastConfettiMinute !== minutes) {
+    confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+    lastConfettiMinute = minutes;
+  }
 
-      const totalDays = daysBetween(nowDateOnly, targetDateOnly);
+  const totalDuration = targetDate - startDate;
+  const elapsed = now - startDate;
+  let progressPercent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+  document.getElementById("progress-bar").style.width = `${progressPercent.toFixed(2)}%`;
+  document.getElementById("progress-percent").textContent = `${progressPercent.toFixed(1)}% complete`;
+}
 
-      // Calculate hours, minutes, seconds left *today*
-      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
-      let msLeftToday = targetDate - now;
-      if (msLeftToday < 0) msLeftToday = 0;
+function rotateQuip() {
+  const quipEl = document.getElementById("quip");
+  quipEl.style.opacity = 0;
+  setTimeout(() => {
+    quipEl.textContent = quips[quipIndex];
+    quipEl.style.opacity = 1;
+    quipIndex = (quipIndex + 1) % quips.length;
+  }, 800);
+}
 
-      const hours = Math.floor(msLeftToday / (1000 * 60 * 60)) % 24;
-      const minutes = Math.floor(msLeftToday / (1000 * 60)) % 60;
-      const seconds = Math.floor(msLeftToday / 1000) % 60;
+function updateQuipsForMode() {
+  if (currentMode === 'graduation') {
+    quips = graduationQuips;
+  } else {
+    quips = summerQuips;
+  }
+  quipIndex = 0;
+  const quipEl = document.getElementById("quip");
+  quipEl.style.opacity = 0;
+  setTimeout(() => {
+    quipEl.textContent = quips[quipIndex];
+    quipEl.style.opacity = 1;
+  }, 500);
+}
 
-      // Show days + time left in HH:MM:SS
-      let countdownText;
-      if (totalDays > 0) {
-        countdownText = `${totalDays} day${totalDays !== 1 ? 's' : ''}, ${hours.toString().padStart(2, '0')}:` +
-                        `${minutes.toString().padStart(2, '0')}:` +
-                        `${seconds.toString().padStart(2, '0')}`;
-      } else {
-        countdownText = `${hours.toString().padStart(2, '0')}:` +
-                        `${minutes.toString().padStart(2, '0')}:` +
-                        `${seconds.toString().padStart(2, '0')}`;
-      }
+document.getElementById("mode-toggle").addEventListener("click", () => {
+  currentMode = currentMode === 'graduation' ? 'summer' : 'graduation';
+  updateQuipsForMode();
+  updateCountdown();
+});
 
-      document.getElementById('countdown').textContent = countdownText;
-      document.getElementById('mode-title').textContent = modeLabel;
+updateQuipsForMode();
+updateCountdown();
+rotateQuip();
 
-      // Progress calculation (0 to 100%)
-      const totalPeriodDays = daysBetween(startDate, targetDate);
-      const elapsedDays = daysBetween(startDate, nowDateOnly);
-      let percentComplete = 0;
-      if (elapsedDays >= 0 && totalPeriodDays > 0) {
-        percentComplete = Math.min(100, Math.max(0, (elapsedDays / totalPeriodDays) * 100));
-      }
-      document.getElementById('progress-bar').style.width = percentComplete + '%';
-      document.getElementById('progress-bar').setAttribute('aria-valuenow', Math.floor(percentComplete));
-      document.getElementById('progress-percent').textContent = `${Math.floor(percentComplete)}% complete`;
-
-      // Confetti once per full minute when seconds = 0
-      if (seconds === 0 && lastConfettiMinute !== now.getMinutes()) {
-        lastConfettiMinute = now.getMinutes();
-        launchConfetti();
-      }
-    }
-
-    // Quip rotation every 10 seconds with fade
-    function rotateQuip() {
-      const quipElem = document.getElementById('quip');
-      quipElem.style.opacity = '0';
-      setTimeout(() => {
-        quipIndex = (quipIndex + 1) % quips.length;
-        quipElem.textContent = quips[quipIndex];
-        quipElem.style.opacity = '1';
-      }, 800);
-    }
-
-    // Launch confetti from bottom center with fade out
-    function launchConfetti() {
-      const duration = 4000;
-      const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
-
-      function frame() {
-        // Emit confetti in bursts from bottom center
-        confetti(Object.assign({}, defaults, {
-          particleCount: 5,
-          origin: { x: 0.5, y: 1 }
-        }));
-
-        if (Date.now() < animationEnd) {
-          requestAnimationFrame(frame);
-        }
-      }
-      frame();
-    }
-
-    // Daily motivational quote (changes each day)
-    function updateDailyQuote() {
-      const now = new Date();
-      const index = now.getDate() % motivationalQuotes.length;
-      document.getElementById('daily-quote').textContent = motivationalQuotes[index];
-    }
-
-    // Mode toggle button
-    document.getElementById('mode-toggle').addEventListener('click', () => {
-      currentMode = currentMode === 'graduation' ? 'summer' : 'graduation';
-      document.getElementById('mode-toggle').setAttribute('aria-pressed', currentMode === 'summer');
-      updateCountdown();
-    });
-
-    // Theme toggle button
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-
-    function setTheme(theme) {
-      if (theme === 'day') {
-        document.body.classList.remove('night-theme');
-        document.body.classList.add('day-theme');
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-      } else {
-        document.body.classList.remove('day-theme');
-        document.body.classList.add('night-theme');
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-      }
-      manualTheme = theme;
-      localStorage.setItem('theme', theme);
-    }
-
-    themeToggleBtn.addEventListener('click', () => {
-      if (manualTheme === 'night') {
-        setTheme('day');
-      } else {
-        setTheme('night');
-      }
-    });
-
-    // Load theme from localStorage or default to night
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'day') {
-      setTheme('day');
-    } else {
-      setTheme('night');
-    }
-
-    // Initial quip setup
-    document.getElementById('quip').textContent = quips[0];
-
-    // Update countdown every second
-    setInterval(updateCountdown, 1000);
-
-    // Rotate quip every 10 seconds
-    setInterval(rotateQuip, 10000);
-
-    // Update daily quote once per load
-    updateDailyQuote();
-
-    // Initial call to populate countdown immediately
-    updateCountdown();
-
-  </script>
+setInterval(updateCountdown, 1000);
+setInterval(rotateQuip, 10000);
+</script>
 </body>
 </html>
