@@ -1,328 +1,252 @@
-<!DOCTYPE html>
-<html lang="en" >
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Class of 2026 Countdown</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    /* Base & Themes */
     body {
-      margin: 0;
       font-family: 'Roboto', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      transition: background 0.5s, color 0.5s;
       background-color: #121212;
-      color: #e0e0e0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    body.light {
-      background-color: #f5f5f5;
-      color: #202020;
-    }
-    /* Card */
-    .card {
-      background: #1e1e1e;
-      border-radius: 16px;
-      padding: 2rem 2.5rem;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-      max-width: 400px;
-      width: 90vw;
-      text-align: center;
-      display: flex;
+      color: #eee;
       flex-direction: column;
-      gap: 1.25rem;
-      transition: background 0.3s, color 0.3s;
-      position: relative;
-      z-index: 10;
+      padding: 1rem;
     }
-    body.light .card {
-      background: #fff;
-      color: #202020;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    }
-    /* Headings & text */
-    h1 {
-      margin: 0 0 0.25em 0;
-      font-weight: 700;
-    }
-    .countdown-container {
-      font-size: 1.3rem;
-      font-weight: 600;
-    }
-    .countdown-text {
-      margin-bottom: 0.2em;
-      font-weight: 600;
-      color: #f9d71c; /* yellow text for the label */
-      font-style: italic;
-    }
-    .countdown {
-      font-size: 1.8rem;
-      min-height: 2.5em;
-    }
-    .quips {
-      font-style: italic;
-      color: #f9d71c; /* yellow quips */
-      min-height: 1.8em;
-      font-size: 1.1rem;
-    }
-    /* Progress bar */
-    progress {
+    .card {
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 550px;
+      text-align: center;
+      background: #1e1e1e;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
       width: 100%;
+      max-width: 600px;
+      position: relative;
+    }
+    .time {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #90caf9;
+      transition: color 0.5s;
+    }
+    .quip {
+      font-size: 1.3rem;
+      margin-top: 1rem;
+      font-style: italic;
+      opacity: 1;
+      transition: opacity 0.8s ease;
+      min-height: 40px;
+      color: #fbc02d;
+    }
+    .progress-container {
+      margin-top: 2rem;
+      text-align: left;
+    }
+    .progress-label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #90caf9;
+      transition: color 0.5s;
+    }
+    .progress {
+      background-color: #333;
+      border-radius: 20px;
+      overflow: hidden;
       height: 20px;
-      border-radius: 10px;
-      appearance: none;
-      background-color: #333;
-      margin-bottom: 0.25em;
-      transition: background-color 0.3s;
     }
-    progress::-webkit-progress-bar {
-      background-color: #333;
-      border-radius: 10px;
+    .determinate {
+      background-color: #42a5f5;
+      height: 100%;
+      width: 0;
+      transition: width 1.5s ease-out;
     }
-    progress::-webkit-progress-value {
-      background-color: #1E90FF; /* blue */
-      border-radius: 10px;
+    body.day-theme {
+      background-color: #f5f5f5;
+      color: #333;
     }
-    progress::-moz-progress-bar {
-      background-color: #1E90FF;
-      border-radius: 10px;
+    body.day-theme .card {
+      background: white;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }
-    #percentage {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #1E90FF; /* blue percentage */
+    body.day-theme .time {
+      color: #1976d2;
     }
-    /* Buttons */
-    .btn-group {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 0.5rem;
+    body.day-theme .progress-label {
+      color: #1976d2;
     }
-    button {
-      background-color: #1E90FF; /* blue buttons */
-      border: none;
-      border-radius: 24px;
-      padding: 0.6em 1.5em;
-      font-weight: 600;
-      cursor: pointer;
-      color: #fff;
-      transition: background-color 0.3s;
-      user-select: none;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    body.day-theme .progress {
+      background-color: #eee;
     }
-    button:hover {
-      background-color: #0b62d0; /* darker blue */
+    body.day-theme .determinate {
+      background-color: #1976d2;
     }
-    /* Theme toggle button */
-    #themeToggleBtn {
+    .theme-button {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background-color: #1E90FF;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      border: none;
+      background-color: #42a5f5;
+      color: white;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(66,165,245,0.5);
       cursor: pointer;
-      color: #f9d71c;
-      font-size: 1.6rem;
+    }
+    .action-buttons {
+      margin-top: 20px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      user-select: none;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-      transition: background-color 0.3s;
-      z-index: 20;
-      padding: 0;
-      line-height: 1;
+      gap: 1rem;
     }
-    #themeToggleBtn:hover {
-      background-color: #0b62d0;
+    .blue-btn {
+      background-color: #42a5f5;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(66,165,245,0.5);
+    }
+    #daily-quote {
+      margin-top: 20px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #fbc02d;
+      text-shadow: 0 0 8px rgba(251, 192, 45, 0.7);
+      min-height: 44px;
     }
   </style>
 </head>
-<body>
-  <div class="card" role="main" aria-label="Class of 2026 Countdown">
-    <h1>Class of 2026</h1>
-    <div class="countdown-container" aria-live="polite" aria-atomic="true">
-      <div id="countdownText" class="countdown-text"></div>
-      <div id="countdown" class="countdown"></div>
+<body class="night-theme">
+  <div class="card z-depth-3">
+    <h4 id="header-text">Countdown to Class of 2026 Graduation</h4>
+    <div class="time" id="countdown">Loading...</div>
+    <div class="quip" id="quip">Getting ready for the tassel flip...</div>
+    <div class="progress-container">
+      <div class="progress-label" id="progress-percent">0% complete</div>
+      <div class="progress">
+        <div class="determinate" id="progress-bar"></div>
+      </div>
     </div>
-    <progress id="progressBar" value="0" max="100" aria-label="Progress"></progress>
-    <div id="percentage" aria-live="polite" aria-atomic="true">0%</div>
-    <div class="quips" id="quips" aria-live="polite" aria-atomic="true"></div>
-    <div class="btn-group">
-      <button id="testConfettiBtn" aria-label="Test Confetti Animation">Test Confetti</button>
-      <button id="switchToGradBtn" aria-label="Switch between Summer and Graduation mode">Switch to Grad Mode</button>
+    <div class="action-buttons">
+      <button class="blue-btn" onclick="confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } })">Test Confetti</button>
+      <button class="blue-btn" onclick="toggleGradMode()">Switch to Summer Mode</button>
     </div>
-  </div>
-
-  <button id="themeToggleBtn" aria-label="Toggle dark/light theme" title="Toggle dark/light theme">
-    <i class="fas fa-moon" aria-hidden="true"></i>
-  </button>
-
-  <script>
-    // Countdown Target Dates
-    const summerDate = new Date('2025-06-01T00:00:00');
-    const gradDate = new Date('2026-06-01T00:00:00');
-    let currentTarget = summerDate;
-    let mode = 'summer'; // or 'grad'
-
-    // Quips
-    const quipsSummer = [
-      "Almost there, summer's calling!",
-      "School's out soon, hang tight!",
-      "Time to soak up the sun soon.",
-      "Countdown to beach days!",
-      "Stay focused, summer's close!"
+  </div>  <div id="daily-quote"></div>
+  <div id="theme-toggle" class="theme-button" onclick="toggleTheme()">
+    <i class="fa-solid fa-moon"></i>
+  </div>  <script>
+    const gradDate = new Date("2026-05-29T10:00:00");
+    const summerEndDate = new Date("2026-08-18T00:00:00");
+    const startDate = new Date("2022-07-28T00:00:00");
+    const quips = [
+      "Getting ready for the tassel flip...",
+      "Senioritis loading in 3... 2... 1...",
+      "College apps and coffee, anyone?",
+      "Remember when 2026 felt forever away?",
+      "Almost time to toss that cap!",
+      "Is it too early to cry happy tears?",
+      "Caps, gowns, and goodbyes coming soon.",
+      "You've got this, Class of '26!",
+      "Keep grinding—freedom's near!",
+      "Make it count—these are the last laps!"
     ];
-    const quipsGrad = [
-      "Graduation day is coming!",
-      "Final countdown to the cap & gown!",
-      "Get ready to celebrate!",
-      "Almost alumni status!",
-      "Your future begins soon!"
+    const summerQuips = [
+      "The sun won't last forever...",
+      "Ice cream and sunsets—enjoy it!",
+      "Make summer memories count.",
+      "Beach days are numbered.",
+      "Catch those rays while you can!"
+    ];
+    const motivationalQuotes = [
+      "Believe you can and you're halfway there.",
+      "Every accomplishment starts with the decision to try.",
+      "Don't watch the clock; do what it does. Keep going.",
+      "Dream big. Work hard. Stay focused.",
+      "Push yourself—no one else will."
     ];
 
-    // Elements
-    const countdownEl = document.getElementById('countdown');
-    const countdownTextEl = document.getElementById('countdownText');
-    const progressBar = document.getElementById('progressBar');
-    const percentageEl = document.getElementById('percentage');
-    const quipsEl = document.getElementById('quips');
-    const testConfettiBtn = document.getElementById('testConfettiBtn');
-    const switchToGradBtn = document.getElementById('switchToGradBtn');
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    let summerMode = false;
+    let manualTheme = null;
+    let quipIndex = 0;
 
-    // Theme functions
-    function applyTheme(theme) {
-      if(theme === 'light') {
-        document.body.classList.add('light');
-        themeToggleBtn.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i>';
-        localStorage.setItem('theme', 'light');
-      } else {
-        document.body.classList.remove('light');
-        themeToggleBtn.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
-        localStorage.setItem('theme', 'dark');
-      }
-    }
-    let savedTheme = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    applyTheme(savedTheme);
-    themeToggleBtn.addEventListener('click', () => {
-      const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
-      applyTheme(newTheme);
-    });
-
-    // Countdown & progress update
     function updateCountdown() {
+      const target = summerMode ? summerEndDate : gradDate;
       const now = new Date();
-      const totalDuration = currentTarget - (mode === 'grad' ? summerDate : new Date('2025-01-01T00:00:00'));
-      const timeLeft = currentTarget - now;
+      const diff = Math.max(0, target - now);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
 
-      if (timeLeft <= 0) {
-        countdownTextEl.textContent = '';
-        countdownEl.textContent = "🎉 It's here!";
-        progressBar.value = 100;
-        percentageEl.textContent = "100%";
-        quipsEl.textContent = "";
-        return;
-      }
-
-      // Time breakdown
-      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
-      const seconds = Math.floor((timeLeft / 1000) % 60);
-
-      // Show label for summer mode
-      if (mode === 'summer') {
-        countdownTextEl.textContent = "Summer ends in";
-      } else {
-        countdownTextEl.textContent = "";
-      }
-
-      countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-      // Progress calculation
-      let progressPercent;
-      if(mode === 'summer') {
-        // from Jan 1, 2025 to summerDate
-        const start = new Date('2025-01-01T00:00:00');
-        progressPercent = ((now - start) / (summerDate - start)) * 100;
-      } else {
-        // from summerDate to gradDate
-        progressPercent = ((now - summerDate) / (gradDate - summerDate)) * 100;
-      }
-      progressPercent = Math.min(Math.max(progressPercent, 0), 100);
-      progressBar.value = progressPercent;
-      percentageEl.textContent = `${progressPercent.toFixed(1)}%`;
-
-      // Random quip every update (1 per second)
-      const quipList = mode === 'summer' ? quipsSummer : quipsGrad;
-      const idx = Math.floor(Math.random() * quipList.length);
-      quipsEl.textContent = quipList[idx];
+      document.getElementById("countdown").textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      updateProgressBar(now);
     }
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
+    function updateProgressBar(now) {
+      const target = summerMode ? summerEndDate : gradDate;
+      const totalDuration = target - startDate;
+      const elapsed = now - startDate;
+      const percent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+      document.getElementById("progress-bar").style.width = percent.toFixed(2) + "%";
+      document.getElementById("progress-percent").textContent = `${percent.toFixed(1)}% complete`;
+    }
 
-    // Confetti helper
-    function createConfettiPiece() {
-      const confetti = document.createElement('div');
-      confetti.style.position = 'fixed';
-      confetti.style.width = '10px';
-      confetti.style.height = '10px';
-      confetti.style.backgroundColor = ['#1E90FF', '#f9d71c'][Math.floor(Math.random() * 2)];
-      confetti.style.left = `${Math.random() * window.innerWidth}px`;
-      confetti.style.top = `-10px`;
-      confetti.style.borderRadius = '3px';
-      confetti.style.opacity = 1;
-      confetti.style.zIndex = 1000;
-      confetti.style.pointerEvents = 'none';
-      confetti.style.transition = 'transform 3s linear, opacity 3s ease-out';
+    function toggleTheme() {
+      if (!manualTheme) {
+        manualTheme = document.body.classList.contains('day-theme') ? 'night' : 'day';
+      } else {
+        manualTheme = manualTheme === 'day' ? 'night' : 'day';
+      }
+      document.body.classList.remove('day-theme', 'night-theme');
+      document.body.classList.add(manualTheme + '-theme');
+    }
 
-      document.body.appendChild(confetti);
-
-      // Animate falling + horizontal drift + fade out
-      const driftX = (Math.random() - 0.5) * 200;
-      confetti.style.transform = `translate(${driftX}px, ${window.innerHeight + 20}px)`;
-      confetti.style.opacity = 0;
-
+    function fadeQuip() {
+      const el = document.getElementById("quip");
+      el.style.opacity = 0;
       setTimeout(() => {
-        confetti.remove();
-      }, 3000);
+        const list = summerMode ? summerQuips : quips;
+        el.textContent = list[quipIndex % list.length];
+        el.style.opacity = 1;
+        quipIndex++;
+      }, 800);
     }
 
-    function launchConfetti(amount = 100) {
-      for(let i=0; i < amount; i++) {
-        setTimeout(createConfettiPiece, i * 10);
-      }
+    function updateDailyQuote() {
+      const now = new Date();
+      const index = now.getDate() % motivationalQuotes.length;
+      document.getElementById("daily-quote").textContent = `"${motivationalQuotes[index]}"`;
     }
 
-    testConfettiBtn.addEventListener('click', () => {
-      launchConfetti(150);
-    });
-
-    // Switch modes
-    switchToGradBtn.addEventListener('click', () => {
-      if(mode === 'summer') {
-        mode = 'grad';
-        currentTarget = gradDate;
-        switchToGradBtn.textContent = 'Switch to Summer Mode';
-      } else {
-        mode = 'summer';
-        currentTarget = summerDate;
-        switchToGradBtn.textContent = 'Switch to Grad Mode';
-      }
+    function toggleGradMode() {
+      summerMode = !summerMode;
+      document.getElementById("header-text").textContent = summerMode ? "Summer ends in…" : "Countdown to Class of 2026 Graduation";
+      quipIndex = 0;
+      fadeQuip();
       updateCountdown();
-    });
-  </script>
-</body>
+    }
+
+    // Init
+    updateCountdown();
+    updateDailyQuote();
+    fadeQuip();
+    setInterval(updateCountdown, 1000);
+    setInterval(fadeQuip, 10000);
+  </script></body>
 </html>
