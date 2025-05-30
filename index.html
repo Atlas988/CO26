@@ -65,7 +65,9 @@
   </div>
 
   <script>
-    const graduationDate = new Date("2026-06-01T10:00:00");
+    // Updated Graduation Date: May 29, 2026 at 10:00 AM
+    const graduationDate = new Date("2026-05-29T10:00:00");
+
     const quips = [
       "Getting ready for the tassel flip...",
       "Senioritis loading in 3... 2... 1...",
@@ -91,7 +93,9 @@
       const seconds = totalSeconds % 60;
 
       document.getElementById('countdown').textContent =
-        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        totalSeconds > 0
+          ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+          : "🎓 Congratulations, Class of 2026!";
     }
 
     function rotateQuip() {
