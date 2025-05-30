@@ -40,10 +40,6 @@
       font-weight: bold;
       margin-bottom: 0.5rem;
     }
-    .school-days {
-      margin-top: 1.5rem;
-      font-weight: bold;
-    }
     .day-theme {
       background-color: #f5f5f5;
       color: #333;
@@ -75,8 +71,6 @@
     <div class="time" id="countdown">Loading...</div>
     <div class="quip" id="quip">Getting ready for the tassel flip...</div>
 
-    <div class="school-days" id="schoolDaysLeft">School days left: ...</div>
-
     <!-- Progress Bar -->
     <div class="progress-container">
       <div class="progress-label" id="progress-percent">0% complete</div>
@@ -88,7 +82,6 @@
 
   <script>
     const graduationDate = new Date("2026-05-29T10:00:00");
-    const seniorStartDate = new Date("2025-07-28");
 
     const quips = [
       "Getting ready for the tassel flip...",
@@ -127,7 +120,6 @@
       }
 
       updateProgressBar(now);
-      updateSchoolDays(now);
     }
 
     function updateProgressBar(currentDate) {
@@ -148,24 +140,6 @@
       const hour = new Date().getHours();
       const isNight = hour < 6 || hour >= 18;
       document.body.classList.add(isNight ? 'night-theme' : 'day-theme');
-    }
-
-    function countSchoolDays(start, end) {
-      let count = 0;
-      let date = new Date(start);
-      while (date <= end) {
-        const day = date.getDay();
-        if (day >= 1 && day <= 5) count++; // Monday–Friday only
-        date.setDate(date.getDate() + 1);
-      }
-      return count;
-    }
-
-    function updateSchoolDays(now) {
-      // school days left from today or seniorStartDate whichever is later
-      const start = now > seniorStartDate ? now : seniorStartDate;
-      const days = countSchoolDays(start, graduationDate);
-      document.getElementById('schoolDaysLeft').textContent = `School days left: ${days}`;
     }
 
     applyTheme();
