@@ -4,16 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Class of 2026</title>
-
-<!-- Font Awesome -->
+<!-- Roboto font -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+<!-- FontAwesome for icons -->
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
-
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
   body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
@@ -21,45 +19,39 @@
     color: #e0e0e0;
     display: flex;
     height: 100vh;
-    justify-content: center;
     align-items: center;
-    transition: background-color 0.4s, color 0.4s;
+    justify-content: center;
   }
-
   .card {
     background-color: #1e1e1e;
-    border-radius: 12px;
     padding: 2rem 3rem;
-    width: 350px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.6);
+    width: 320px;
+    text-align: center;
     position: relative;
-    overflow: visible;
   }
-
   h1 {
-    margin: 0 0 0.4em 0;
-    font-weight: 700;
-    font-size: 2rem;
+    margin: 0 0 0.25em 0;
+    font-weight: 500;
   }
-
   .countdown {
-    font-size: 1.8rem;
-    margin: 0.4em 0 1em 0;
-    min-height: 2.5em;
-    font-weight: 600;
+    font-size: 2rem;
+    margin: 0.5em 0 0.2em 0;
+    min-height: 2.8em;
   }
-
+  #percentDisplay {
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    font-size: 1.2rem;
+    color: #64b5f6;
+  }
   .quips {
     font-style: italic;
-    margin: 0.5em 0 1.5em 0;
+    margin: 1em 0 1.6em 0;
     min-height: 1.8em;
-    color: #ffd54f; /* yellow */
-    text-align: center;
+    color: #ffeb3b; /* Yellow */
   }
-
   progress {
     width: 100%;
     height: 20px;
@@ -68,7 +60,6 @@
     -webkit-appearance: none;
     background-color: #333;
     margin-bottom: 1.5em;
-    transition: background-color 0.4s;
   }
   progress::-webkit-progress-bar {
     background-color: #333;
@@ -77,52 +68,44 @@
   progress::-webkit-progress-value {
     background-color: #64b5f6;
     border-radius: 10px;
-    transition: background-color 0.4s;
   }
   progress::-moz-progress-bar {
     background-color: #64b5f6;
     border-radius: 10px;
   }
-
-  /* Theme toggle button */
-  .theme-toggle {
-    cursor: pointer;
-    padding: 0.5em 1em;
+  /* Theme toggle button bottom-left */
+  #toggleThemeBtn {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
     background-color: #1e88e5;
     border: none;
-    border-radius: 5px;
+    padding: 0.5em 1em;
+    border-radius: 24px;
     color: white;
+    cursor: pointer;
     font-weight: 600;
-    user-select: none;
-    transition: background-color 0.3s;
     display: flex;
     align-items: center;
     gap: 0.5em;
-    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(30,136,229,0.6);
+    transition: background-color 0.3s ease;
+    user-select: none;
   }
-  .theme-toggle:hover {
+  #toggleThemeBtn:hover {
     background-color: #1565c0;
   }
-
-  /* Position the toggle button bottom-left */
-  #toggleThemeBtn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 100;
-  }
-
   /* Light theme */
   body.light {
     background-color: #f5f5f5;
     color: #202020;
   }
   body.light .card {
-    background-color: #fff;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
   }
-  body.light .quips {
-    color: #fbc02d;
+  body.light #percentDisplay {
+    color: #1976d2;
   }
   body.light progress {
     background-color: #ddd;
@@ -136,34 +119,42 @@
   body.light progress::-moz-progress-bar {
     background-color: #1976d2;
   }
-  body.light .theme-toggle {
+  body.light #toggleThemeBtn {
     background-color: #1976d2;
+    color: white;
+    box-shadow: 0 4px 10px rgba(25,118,210,0.6);
   }
-  body.light .theme-toggle:hover {
+  body.light #toggleThemeBtn:hover {
     background-color: #0d47a1;
   }
 </style>
 </head>
 <body>
 
-<div class="card" role="main" aria-label="Countdown to graduation">
+<div class="card" role="main" aria-label="Class of 2026 Countdown">
   <h1>Class of 2026</h1>
   <div class="countdown" id="countdown" aria-live="polite">Loading...</div>
-  <progress id="progressBar" value="0" max="100" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></progress>
+  <div id="percentDisplay" aria-live="polite"></div>
+  <progress
+    id="progressBar"
+    value="0"
+    max="100"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+  ></progress>
   <div class="quips" id="quips" aria-live="polite"></div>
 </div>
 
-<button class="theme-toggle" id="toggleThemeBtn" aria-pressed="false" aria-label="Toggle theme">
-  <i class="fas fa-moon"></i> Dark Mode
+<button id="toggleThemeBtn" aria-label="Toggle theme">
+  <i class="fas fa-moon"></i> Dark Theme Mode
 </button>
-
-<!-- Load canvas-confetti library -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
 (() => {
   const countdownEl = document.getElementById('countdown');
   const progressBar = document.getElementById('progressBar');
+  const percentDisplay = document.getElementById('percentDisplay');
   const quipsEl = document.getElementById('quips');
   const toggleThemeBtn = document.getElementById('toggleThemeBtn');
 
@@ -256,39 +247,91 @@
     "Keep the hustle alive till the end."
   ];
 
-  const gradDate = new Date(2026, 4, 29); // May 29, 2026
-  const schoolStart = new Date(2025, 6, 28); // July 28, 2025
+  // Graduation date: May 29, 2026 at 00:00:00 local time
+  const gradDate = new Date(2026, 4, 29);
+  // School year start: July 28, 2025
+  const schoolStart = new Date(2025, 6, 28);
 
+  // Pad numbers with zero if needed
   function pad(n) {
     return n.toString().padStart(2, '0');
   }
 
-  let lastMinute = null;
+  let lastMinute = -1;
 
-  // Confetti function using canvas-confetti lib
+  // Confetti explosion using canvas
   function confettiExplosion() {
-    const duration = 1500;
-    const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+    const duration = 2000;
+    const end = Date.now() + duration;
 
-    function randomInRange(min, max) {
-      return Math.random() * (max - min) + min;
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = 0;
+    canvas.style.left = 0;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = 9999;
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * -H;
+        this.r = (Math.random() * 6) + 4;
+        this.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        this.tilt = Math.floor(Math.random() * 10) - 10;
+        this.tiltAngle = 0;
+        this.tiltAngleIncrement = Math.random() * 0.1 + 0.05;
+        this.speed = Math.random() * 3 + 2;
+      }
+      update() {
+        this.tiltAngle += this.tiltAngleIncrement;
+        this.y += this.speed;
+        this.x += Math.sin(this.tiltAngle) * 2;
+        this.tilt = Math.sin(this.tiltAngle) * 15;
+        if (this.y > H) {
+          this.y = -10;
+          this.x = Math.random() * W;
+        }
+      }
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.lineWidth = this.r / 2;
+        ctx.strokeStyle = this.color;
+        ctx.moveTo(this.x + this.tilt + this.r / 4, this.y);
+        ctx.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 4);
+        ctx.stroke();
+      }
     }
 
-    const interval = setInterval(function() {
-      const timeLeft = animationEnd - Date.now();
+    const particles = [];
+    for(let i=0; i<150; i++){
+      particles.push(new Particle());
+    }
 
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        p.update();
+        p.draw(ctx);
+      });
+      if(Date.now() < end) {
+        requestAnimationFrame(animate);
+      } else {
+        document.body.removeChild(canvas);
       }
-
-      const particleCount = 5 * (timeLeft / duration);
-      // since particles fall down, origin x varies randomly across screen width
-      confetti(Object.assign({}, defaults, {
-        particleCount,
-        origin: { x: Math.random(), y: Math.random() * 0.6 }
-      }));
-    }, 250);
+    }
+    animate();
   }
 
   function update() {
@@ -300,6 +343,7 @@
       countdownEl.textContent = "Congratulations, Class of 2026! 🎓";
       progressBar.value = 100;
       progressBar.setAttribute('aria-valuenow', 100);
+      percentDisplay.textContent = '100% completed';
       return;
     }
 
@@ -314,64 +358,57 @@
     countdownEl.textContent =
       `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
 
+    // Update progress bar and percentage
     const totalDuration = gradDate - schoolStart;
     const elapsed = now - schoolStart;
     let percent = (elapsed / totalDuration) * 100;
-    if (percent < 0) percent = 0;
-    if (percent > 100) percent = 100;
+    percent = Math.min(Math.max(percent, 0), 100); // Clamp 0-100
+
     progressBar.value = percent;
     progressBar.setAttribute('aria-valuenow', Math.round(percent));
+    percentDisplay.textContent = `${Math.round(percent)}% completed`;
 
-    if (minutes !== lastMinute) {
-      lastMinute = minutes;
+    // Show a random quip
+    const randomIndex = Math.floor(Math.random() * quips.length);
+    quipsEl.textContent = quips[randomIndex];
+
+    // Confetti explosion every new minute
+    if(minutes !== lastMinute) {
       confettiExplosion();
+      lastMinute = minutes;
     }
   }
 
-  function showQuip() {
-    const index = Math.floor(Math.random() * quips.length);
-    quipsEl.textContent = quips[index];
+  // Initial theme load
+  function loadTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if(savedTheme === 'light') {
+      document.body.classList.add('light');
+      toggleThemeBtn.innerHTML = '<i class="fas fa-sun"></i> Light Theme Mode';
+    } else {
+      document.body.classList.remove('light');
+      toggleThemeBtn.innerHTML = '<i class="fas fa-moon"></i> Dark Theme Mode';
+    }
   }
 
-  // Theme toggle logic
-  function setTheme(dark) {
-    if (dark) {
+  // Toggle theme handler
+  toggleThemeBtn.addEventListener('click', () => {
+    if(document.body.classList.contains('light')) {
       document.body.classList.remove('light');
-      toggleThemeBtn.setAttribute('aria-pressed', 'false');
-      toggleThemeBtn.innerHTML = `<i class="fas fa-moon"></i> Dark Mode`;
       localStorage.setItem('theme', 'dark');
+      toggleThemeBtn.innerHTML = '<i class="fas fa-moon"></i> Dark Theme Mode';
     } else {
       document.body.classList.add('light');
-      toggleThemeBtn.setAttribute('aria-pressed', 'true');
-      toggleThemeBtn.innerHTML = `<i class="fas fa-sun"></i> Light Mode`;
       localStorage.setItem('theme', 'light');
+      toggleThemeBtn.innerHTML = '<i class="fas fa-sun"></i> Light Theme Mode';
     }
-  }
-
-  // Load saved theme or default dark
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'light') {
-    setTheme(false);
-  } else {
-    setTheme(true);
-  }
-
-  toggleThemeBtn.addEventListener('click', () => {
-    const isDark = !document.body.classList.contains('light');
-    setTheme(isDark);
   });
 
-  // Initial call
+  loadTheme();
   update();
-  showQuip();
-
-  // Update every second
   setInterval(update, 1000);
-
-  // Change quip every 6 seconds
-  setInterval(showQuip, 6000);
-
 })();
 </script>
+
 </body>
 </html>
