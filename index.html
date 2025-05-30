@@ -191,178 +191,197 @@
   </button>
 
   <script>
-    const graduationDate = new Date("2026-05-29T10:00:00");
-    const fullHighSchoolStartDate = new Date("2022-07-28T00:00:00");
-    const seniorYearStartDate = new Date("2025-07-28T00:00:00");
-    const summerStartDate = new Date("2025-05-30T00:00:00");
-    const summerEndDate = new Date("2025-07-28T00:00:00");
+  const graduationDate = new Date("2026-05-29T10:00:00");
+  const schoolStartDate = new Date("2025-07-28T00:00:00");
+  const summerStartDate = new Date("2025-05-30T00:00:00");
+  const summerEndDate = new Date("2025-07-28T00:00:00");
 
-    const quips = [
-      "Getting ready for the tassel flip...",
-      "Senioritis loading in 3... 2... 1...",
-      "College apps and coffee, anyone?",
-      "Remember when 2026 felt forever away?",
-      "Almost time to toss that cap!",
-      "Is it too early to cry happy tears?",
-      "Caps, gowns, and goodbyes coming soon.",
-      "You've got this, Class of '26!",
-      "Keep grinding—freedom's near!",
-      "Make it count—these are the last laps!"
-    ];
+  const quips = [
+    "Getting ready for the tassel flip...",
+    "Senioritis loading in 3... 2... 1...",
+    "College apps and coffee, anyone?",
+    "Remember when 2026 felt forever away?",
+    "Almost time to toss that cap!",
+    "Is it too early to cry happy tears?",
+    "Caps, gowns, and goodbyes coming soon.",
+    "You've got this, Class of '26!",
+    "Keep grinding—freedom's near!",
+    "Make it count—these are the last laps!"
+  ];
 
-    const motivationalQuotes = [
-      "Believe you can and you're halfway there.",
-      "Every accomplishment starts with the decision to try.",
-      "Don't watch the clock; do what it does. Keep going.",
-      "Success is the sum of small efforts repeated day in and day out.",
-      "Dream big. Work hard. Stay focused.",
-      "The future belongs to those who believe in the beauty of their dreams.",
-      "Push yourself, because no one else is going to do it for you.",
-      "Mistakes are proof that you are trying.",
-      "Success doesn’t come from what you do occasionally, it comes from what you do consistently.",
-      "Your limitation—it’s only your imagination."
-    ];
+  const motivationalQuotes = [
+    "Believe you can and you're halfway there.",
+    "Every accomplishment starts with the decision to try.",
+    "Don't watch the clock; do what it does. Keep going.",
+    "Success is the sum of small efforts repeated day in and day out.",
+    "Dream big. Work hard. Stay focused.",
+    "The future belongs to those who believe in the beauty of their dreams.",
+    "Push yourself, because no one else is going to do it for you.",
+    "Mistakes are proof that you are trying.",
+    "Success doesn’t come from what you do occasionally, it comes from what you do consistently.",
+    "Your limitation—it’s only your imagination."
+  ];
 
-    let currentMode = 'graduation'; // or 'summer'
-    let quipIndex = 0;
-    let lastConfettiMinute = null;
+  let currentMode = 'graduation'; // or 'summer'
+  let quipIndex = 0;
+  let hasCelebrated = false;
+  let lastConfettiMinute = null;
+  let manualTheme = null;
 
-    // Theme toggle button and icon
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const themeIcon = themeToggleBtn.querySelector('i');
+  // Helper to get full days between ignoring time-of-day issues
+  function daysBetween(date1, date2) {
+    const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
+    const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
+    const msPerDay = 24 * 60 * 60 * 1000;
+    return Math.floor((utc2 - utc1) / msPerDay);
+  }
 
-    // Function to update theme icon based on current theme
-    function updateThemeIcon() {
-      if (document.body.classList.contains('night-theme')) {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-      } else {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-      }
+  function updateCountdown() {
+    const now = new Date();
+    let targetDate, startDate, modeLabel;
+
+    if (currentMode === 'graduation') {
+      targetDate = graduationDate;
+      startDate = schoolStartDate;
+      modeLabel = "Graduation in";
+    } else {
+      targetDate = summerEndDate;
+      startDate = summerStartDate;
+      modeLabel = "Summer ends in";
     }
 
-    // Apply default dark theme
-    document.body.classList.add('night-theme');
-    updateThemeIcon();
+    const totalSeconds = Math.floor((targetDate - now) / 1000);
+    const days = daysBetween(now, targetDate);
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
-    // Toggle theme button click
-    themeToggleBtn.addEventListener('click', () => {
-      if (document.body.classList.contains('night-theme')) {
-        document.body.classList.replace('night-theme', 'day-theme');
-      } else {
-        document.body.classList.replace('day-theme', 'night-theme');
-      }
-      updateThemeIcon();
-    });
+    document.getElementById("mode-title").textContent = totalSeconds > 0 ? modeLabel : "🎉 It's time!";
+    document.getElementById("countdown").textContent = totalSeconds > 0
+      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+      : "🎓 Congratulations!";
 
-    // Mode toggle button
-    document.getElementById('mode-toggle').addEventListener('click', () => {
-      currentMode = currentMode === 'graduation' ? 'summer' : 'graduation';
-      quipIndex = 0;
-      document.getElementById('quip').textContent = quips[quipIndex];
-      updateCountdown();
-    });
-
-    function updateCountdown() {
-      const now = new Date();
-      let targetDate, startDate, modeLabel;
-
-      if (currentMode === 'graduation') {
-        targetDate = graduationDate;
-        // Use senior year start date for progress (change if you want full HS)
-        startDate = seniorYearStartDate;
-        modeLabel = "Graduation in";
-      } else {
-        targetDate = summerEndDate;
-        startDate = summerStartDate;
-        modeLabel = "Summer ends in";
-      }
-
-      const totalSeconds = Math.floor((targetDate - now) / 1000);
-      const days = Math.floor(totalSeconds / (3600 * 24));
-      const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      document.getElementById("mode-title").textContent = totalSeconds > 0 ? modeLabel : "🎉 It's time!";
-      document.getElementById("countdown").textContent = totalSeconds > 0
-        ? `${days}d ${hours}h ${minutes}m ${seconds}s`
-        : "🎓 Congratulations!";
-
-      if (totalSeconds > 0 && seconds === 0 && lastConfettiMinute !== minutes) {
-        confetti({
-          particleCount: 150,
-          spread: 100,
-          origin: { y: 0.6 },
-          colors: ['#fbc02d', '#42a5f5', '#90caf9']
-        });
-        lastConfettiMinute = minutes;
-      }
-
-      const totalDuration = targetDate - startDate;
-      const timeElapsed = now - startDate;
-      let progressPercent = Math.min(100, Math.max(0, (timeElapsed / totalDuration) * 100));
-      if (currentMode === 'summer') {
-        progressPercent = 0; // no progress bar for summer mode
-      }
-      document.getElementById("progress-bar").style.width = `${progressPercent.toFixed(2)}%`;
-      document.getElementById("progress-percent").textContent = `${progressPercent.toFixed(1)}% complete`;
+    // Confetti logic
+    if (totalSeconds > 0 && seconds === 0 && lastConfettiMinute !== minutes) {
+      confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+      lastConfettiMinute = minutes;
+    } else if (totalSeconds <= 0 && !hasCelebrated) {
+      confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
+      hasCelebrated = true;
     }
 
-    function rotateQuip() {
-      const quipEl = document.getElementById("quip");
-      quipEl.style.opacity = 0;
-      setTimeout(() => {
-        quipEl.textContent = quips[quipIndex];
-        quipEl.style.opacity = 1;
-        quipIndex = (quipIndex + 1) % quips.length;
-      }, 800);
-}
-function updateDailyQuote() {
-      const now = new Date();
-      const startOfYear = new Date(now.getFullYear(), 0, 0);
-      const diff = now - startOfYear;
-      const oneDay = 1000 * 60 * 60 * 24;
-      const dayOfYear = Math.floor(diff / oneDay);
+    // Progress percent calculation
+    const totalDuration = targetDate - startDate;
+    const timeElapsed = now - startDate;
 
-      // Cycle through motivationalQuotes by day of year
-      const quote = motivationalQuotes[dayOfYear % motivationalQuotes.length];
-      const quoteEl = document.getElementById("daily-quote");
-      quoteEl.style.opacity = 0;
-      setTimeout(() => {
-        quoteEl.textContent = quote;
-        quoteEl.style.opacity = 1;
-      }, 800);
+    let progressPercent = 0;
+    if (now < startDate) {
+      progressPercent = 0;
+    } else if (now > targetDate) {
+      progressPercent = 100;
+    } else {
+      progressPercent = (timeElapsed / totalDuration) * 100;
     }
+    progressPercent = Math.min(100, Math.max(0, progressPercent));
 
-    // Initial call to display quip and daily quote
-    document.getElementById("quip").textContent = quips[quipIndex];
-    updateDailyQuote();
+    document.getElementById("progress-bar").style.width = `${progressPercent.toFixed(2)}%`;
+    document.getElementById("progress-percent").textContent = `${progressPercent.toFixed(1)}% complete`;
+  }
 
-    // Update countdown every second
-    setInterval(() => {
-      updateCountdown();
-    }, 1000);
+  function rotateQuip() {
+    const quipEl = document.getElementById("quip");
+    quipEl.style.opacity = 0;
+    setTimeout(() => {
+      quipEl.textContent = quips[quipIndex];
+      quipEl.style.opacity = 1;
+      quipIndex = (quipIndex + 1) % quips.length;
+    }, 800);
+  }
 
-    // Rotate quip every 10 seconds
-    setInterval(() => {
-      rotateQuip();
-    }, 10000);
+  function updateDailyQuote() {
+    const now = new Date();
+    const startOfYear = new Date(now.getFullYear(), 0, 0);
+    const diff = now - startOfYear;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor(diff / oneDay);
+    const quote = motivationalQuotes[dayOfYear % motivationalQuotes.length];
+    const quoteEl = document.getElementById('daily-quote');
+    quoteEl.style.opacity = 0;
+    setTimeout(() => {
+      quoteEl.textContent = `"${quote}"`;
+      quoteEl.style.opacity = 1;
+    }, 800);
+  }
 
-    // Update daily quote once per day at midnight
-    function scheduleDailyQuoteUpdate() {
-      const now = new Date();
-      const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
-      setTimeout(() => {
-        updateDailyQuote();
-        scheduleDailyQuoteUpdate();
-      }, msUntilMidnight);
+  function applyTheme() {
+    const body = document.body;
+    if (manualTheme) {
+      body.className = manualTheme === 'day' ? 'day-theme' : 'night-theme';
+    } else {
+      const hour = new Date().getHours();
+      body.className = hour >= 6 && hour < 18 ? 'day-theme' : 'night-theme';
     }
-    scheduleDailyQuoteUpdate();
+  }
 
-    // Initial countdown update
+  // Initialize theme to dark by default
+  manualTheme = 'night';
+  applyTheme();
+
+  // Toggle theme with FontAwesome icons
+  const themeToggle = document.getElementById("theme-toggle");
+  themeToggle.innerHTML = '<i id="theme-icon" class="fa fa-moon"></i>';
+  themeToggle.style.position = 'fixed';
+  themeToggle.style.bottom = '15px';
+  themeToggle.style.left = '15px';
+  themeToggle.style.borderRadius = '50%';
+  themeToggle.style.width = '48px';
+  themeToggle.style.height = '48px';
+  themeToggle.style.padding = '0';
+  themeToggle.style.backgroundColor = '#42a5f5';
+  themeToggle.style.display = 'flex';
+  themeToggle.style.alignItems = 'center';
+  themeToggle.style.justifyContent = 'center';
+  themeToggle.style.boxShadow = '0 4px 10px rgba(66,165,245,0.5)';
+  themeToggle.style.cursor = 'pointer';
+
+  themeToggle.addEventListener("click", () => {
+    manualTheme = manualTheme === 'day' ? 'night' : 'day';
+    applyTheme();
+    const icon = document.getElementById('theme-icon');
+    if (manualTheme === 'day') {
+      icon.className = 'fa fa-sun';
+      themeToggle.style.backgroundColor = '#1976d2';
+    } else {
+      icon.className = 'fa fa-moon';
+      themeToggle.style.backgroundColor = '#42a5f5';
+    }
+  });
+
+  document.getElementById("mode-toggle").addEventListener("click", () => {
+    currentMode = currentMode === 'graduation' ? 'summer' : 'graduation';
+    hasCelebrated = false;
     updateCountdown();
-  </script>
+  });
+
+  // Initial setup
+  updateCountdown();
+  rotateQuip();
+  updateDailyQuote();
+
+  // Intervals
+  setInterval(updateCountdown, 1000);
+  setInterval(rotateQuip, 10000);
+
+  // Update daily quote once a day at midnight
+  function scheduleDailyQuoteUpdate() {
+    const now = new Date();
+    const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
+    setTimeout(() => {
+      updateDailyQuote();
+      scheduleDailyQuoteUpdate();
+    }, msUntilMidnight);
+  }
+  scheduleDailyQuoteUpdate();
+</script>
 </body>
 </html>
