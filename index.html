@@ -4,9 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Class of 2026 Countdown</title>
+
+  <!-- Materialize CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+
+  <!-- Roboto font -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <style>
     body {
       font-family: 'Roboto', sans-serif;
@@ -20,6 +30,8 @@
       color: #eee;
       flex-direction: column;
       padding: 1rem;
+      position: relative;
+      overflow-x: hidden;
     }
     .card {
       padding: 2rem;
@@ -56,16 +68,6 @@
       margin-bottom: 0.5rem;
       color: #90caf9;
       transition: color 0.5s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1rem;
-    }
-    .progress-mode-label {
-      font-style: italic;
-      font-weight: 400;
-      font-size: 0.9rem;
-      color: #fbc02d;
     }
     .progress {
       background-color: #333;
@@ -93,9 +95,6 @@
     body.day-theme .progress-label {
       color: #1976d2;
     }
-    body.day-theme .progress-mode-label {
-      color: #fbc02d;
-    }
     body.day-theme .progress {
       background-color: #eee;
     }
@@ -115,16 +114,13 @@
     body.night-theme .progress-label {
       color: #90caf9;
     }
-    body.night-theme .progress-mode-label {
-      color: #fbc02d;
-    }
     body.night-theme .progress {
       background-color: #333;
     }
     body.night-theme .determinate {
       background-color: #42a5f5;
     }
-    #theme-toggle, #mode-toggle, #progress-mode-toggle {
+    #mode-toggle {
       margin-top: 15px;
       padding: 10px 20px;
       font-size: 1rem;
@@ -137,7 +133,7 @@
       transition: background-color 0.3s ease;
       margin-right: 10px;
     }
-    #theme-toggle:hover, #mode-toggle:hover, #progress-mode-toggle:hover {
+    #mode-toggle:hover {
       background-color: #1e88e5;
     }
     #daily-quote {
@@ -152,48 +148,55 @@
       min-height: 44px;
       transition: opacity 0.8s ease;
     }
-    .button-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 10px;
+
+    /* Theme toggle fixed button bottom left */
+    #theme-toggle {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.8rem;
+      color: #fbc02d;
+      transition: color 0.3s ease;
+      z-index: 9999;
+      user-select: none;
+    }
+    #theme-toggle:hover {
+      color: #fff176;
     }
   </style>
 </head>
 <body class="night-theme">
   <div class="card z-depth-3" role="main" aria-live="polite">
     <h4 id="mode-title">Graduation in</h4>
-    <div class="time" id="countdown" aria-label="Countdown timer">Loading...</div>
+    <div class="time" id="countdown">Loading...</div>
     <div class="quip" id="quip">Getting ready for the tassel flip...</div>
-    <div class="progress-container" aria-label="Progress bar container">
-      <div class="progress-label" id="progress-label">
-        <span id="progress-percent">0% complete</span>
-        <span class="progress-mode-label" id="progress-mode-label">Full High School</span>
-      </div>
+    <div class="progress-container" aria-label="Progress towards graduation">
+      <div class="progress-label" id="progress-percent">0% complete</div>
       <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="determinate" id="progress-bar" style="width: 0%"></div>
       </div>
     </div>
   </div>
 
-  <div class="button-row">
-    <button id="mode-toggle" aria-pressed="false">Toggle Mode</button>
-    <button id="progress-mode-toggle" aria-pressed="false">Toggle Progress Mode</button>
-    <button id="theme-toggle" aria-pressed="false">Toggle Theme</button>
-  </div>
+  <button id="mode-toggle" aria-pressed="false" aria-label="Toggle between Graduation and Summer countdown">Toggle Mode</button>
 
   <div id="daily-quote" aria-live="polite"></div>
 
+  <!-- Theme toggle with Font Awesome icon bottom-left -->
+  <button id="theme-toggle" aria-label="Toggle theme (dark/light)" title="Toggle theme">
+    <i class="fas fa-moon"></i>
+  </button>
+
   <script>
-    // Dates
     const graduationDate = new Date("2026-05-29T10:00:00");
-    const schoolStartDate2022 = new Date("2022-07-28T00:00:00");
-    const schoolStartDate2025 = new Date("2025-07-28T00:00:00");
+    const fullHighSchoolStartDate = new Date("2022-07-28T00:00:00");
+    const seniorYearStartDate = new Date("2025-07-28T00:00:00");
     const summerStartDate = new Date("2025-05-30T00:00:00");
     const summerEndDate = new Date("2025-07-28T00:00:00");
 
-    // Texts
     const quips = [
       "Getting ready for the tassel flip...",
       "Senioritis loading in 3... 2... 1...",
@@ -220,13 +223,46 @@
       "Your limitation—it’s only your imagination."
     ];
 
-    // State variables
     let currentMode = 'graduation'; // or 'summer'
-    let progressMode = 'fullHighSchool'; // 'fullHighSchool' or 'seniorYear'
     let quipIndex = 0;
-    let hasCelebrated = false;
     let lastConfettiMinute = null;
-    let manualTheme = null;
+
+    // Theme toggle button and icon
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = themeToggleBtn.querySelector('i');
+
+    // Function to update theme icon based on current theme
+    function updateThemeIcon() {
+      if (document.body.classList.contains('night-theme')) {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      } else {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      }
+    }
+
+    // Apply default dark theme
+    document.body.classList.add('night-theme');
+    updateThemeIcon();
+
+    // Toggle theme button click
+    themeToggleBtn.addEventListener('click', () => {
+      if (document.body.classList.contains('night-theme')) {
+        document.body.classList.replace('night-theme', 'day-theme');
+      } else {
+        document.body.classList.replace('day-theme', 'night-theme');
+      }
+      updateThemeIcon();
+    });
+
+    // Mode toggle button
+    document.getElementById('mode-toggle').addEventListener('click', () => {
+      currentMode = currentMode === 'graduation' ? 'summer' : 'graduation';
+      quipIndex = 0;
+      document.getElementById('quip').textContent = quips[quipIndex];
+      updateCountdown();
+    });
 
     function updateCountdown() {
       const now = new Date();
@@ -234,8 +270,9 @@
 
       if (currentMode === 'graduation') {
         targetDate = graduationDate;
+        // Use senior year start date for progress (change if you want full HS)
+        startDate = seniorYearStartDate;
         modeLabel = "Graduation in";
-        startDate = (progressMode === 'fullHighSchool') ? schoolStartDate2022 : schoolStartDate2025;
       } else {
         targetDate = summerEndDate;
         startDate = summerStartDate;
@@ -250,112 +287,82 @@
 
       document.getElementById("mode-title").textContent = totalSeconds > 0 ? modeLabel : "🎉 It's time!";
       document.getElementById("countdown").textContent = totalSeconds > 0
-        ? `${days}d ${hours}: `${days}d ${hours}h ${minutes}m ${seconds}s`
-        : "🎉 Congratulations!";
+        ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+        : "🎓 Congratulations!";
 
-      // Progress calculation (only for graduation mode)
-      let progressPercent = 0;
-      if (currentMode === 'graduation') {
-        const totalDuration = targetDate - startDate;
-        const elapsed = now - startDate;
-        progressPercent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-        document.getElementById("progress-mode-label").textContent =
-          (progressMode === 'fullHighSchool') ? "Full High School" : "Senior Year";
-      } else {
-        // Summer mode has no progress bar, reset to 0%
-        progressPercent = 0;
-        document.getElementById("progress-mode-label").textContent = "";
-      }
-
-      // Update progress bar and aria
-      const progressBar = document.getElementById("progress-bar");
-      progressBar.style.width = progressPercent + "%";
-      const progressPercentLabel = document.getElementById("progress-percent");
-      progressPercentLabel.textContent = Math.floor(progressPercent) + "% complete";
-      progressBar.parentElement.setAttribute("aria-valuenow", Math.floor(progressPercent));
-
-      // Confetti once every full minute when countdown is active and remaining time > 0
-      if (totalSeconds > 0) {
-        const currentMinute = now.getMinutes();
-        if (currentMinute !== lastConfettiMinute) {
-          launchConfetti();
-          lastConfettiMinute = currentMinute;
-        }
-      }
-
-      // Quip rotation every 10 seconds
-      if (!quipTimer) {
-        quipTimer = setInterval(() => {
-          quipIndex = (quipIndex + 1) % quips.length;
-          const quipElem = document.getElementById("quip");
-          quipElem.style.opacity = 0;
-          setTimeout(() => {
-            quipElem.textContent = quips[quipIndex];
-            quipElem.style.opacity = 1;
-          }, 800);
-        }, 10000);
-      }
-    }
-
-    function launchConfetti() {
-      const duration = 3000;
-      const end = Date.now() + duration;
-
-      (function frame() {
+      if (totalSeconds > 0 && seconds === 0 && lastConfettiMinute !== minutes) {
         confetti({
-          particleCount: 5,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
           colors: ['#fbc02d', '#42a5f5', '#90caf9']
         });
-        confetti({
-          particleCount: 5,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: ['#fbc02d', '#42a5f5', '#90caf9']
-        });
+        lastConfettiMinute = minutes;
+      }
 
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      })();
+      const totalDuration = targetDate - startDate;
+      const timeElapsed = now - startDate;
+      let progressPercent = Math.min(100, Math.max(0, (timeElapsed / totalDuration) * 100));
+      if (currentMode === 'summer') {
+        progressPercent = 0; // no progress bar for summer mode
+      }
+      document.getElementById("progress-bar").style.width = `${progressPercent.toFixed(2)}%`;
+      document.getElementById("progress-percent").textContent = `${progressPercent.toFixed(1)}% complete`;
     }
 
-    // Mode toggle between graduation and summer countdown
-    document.getElementById("mode-toggle").addEventListener("click", () => {
-      currentMode = currentMode === 'graduation' ? 'summer' : 'graduation';
-      hasCelebrated = false;
-      quipIndex = 0;
-      document.getElementById("quip").textContent = quips[quipIndex];
+    function rotateQuip() {
+      const quipEl = document.getElementById("quip");
+      quipEl.style.opacity = 0;
+      setTimeout(() => {
+        quipEl.textContent = quips[quipIndex];
+        quipEl.style.opacity = 1;
+        quipIndex = (quipIndex + 1) % quips.length;
+      }, 800);
+}
+function updateDailyQuote() {
+      const now = new Date();
+      const startOfYear = new Date(now.getFullYear(), 0, 0);
+      const diff = now - startOfYear;
+      const oneDay = 1000 * 60 * 60 * 24;
+      const dayOfYear = Math.floor(diff / oneDay);
+
+      // Cycle through motivationalQuotes by day of year
+      const quote = motivationalQuotes[dayOfYear % motivationalQuotes.length];
+      const quoteEl = document.getElementById("daily-quote");
+      quoteEl.style.opacity = 0;
+      setTimeout(() => {
+        quoteEl.textContent = quote;
+        quoteEl.style.opacity = 1;
+      }, 800);
+    }
+
+    // Initial call to display quip and daily quote
+    document.getElementById("quip").textContent = quips[quipIndex];
+    updateDailyQuote();
+
+    // Update countdown every second
+    setInterval(() => {
       updateCountdown();
-    });
+    }, 1000);
 
-    // Progress mode toggle between full HS and senior year (only if graduation mode active)
-    document.getElementById("progress-mode-toggle").addEventListener("click", () => {
-      if (currentMode === 'graduation') {
-        progressMode = (progressMode === 'fullHighSchool') ? 'seniorYear' : 'fullHighSchool';
-        updateCountdown();
-      }
-    });
+    // Rotate quip every 10 seconds
+    setInterval(() => {
+      rotateQuip();
+    }, 10000);
 
-    // Theme toggle between night and day
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-      if (document.body.classList.contains("night-theme")) {
-        document.body.classList.replace("night-theme", "day-theme");
-      } else {
-        document.body.classList.replace("day-theme", "night-theme");
-      }
-    });
+    // Update daily quote once per day at midnight
+    function scheduleDailyQuoteUpdate() {
+      const now = new Date();
+      const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
+      setTimeout(() => {
+        updateDailyQuote();
+        scheduleDailyQuoteUpdate();
+      }, msUntilMidnight);
+    }
+    scheduleDailyQuoteUpdate();
 
-    // Initial quip timer variable
-    let quipTimer = null;
-
-    // Initialize on page load
+    // Initial countdown update
     updateCountdown();
-    setInterval(updateCountdown, 1000);
-
   </script>
 </body>
 </html>
