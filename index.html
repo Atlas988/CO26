@@ -36,6 +36,7 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+    overflow: visible;
   }
 
   h1 {
@@ -141,6 +142,24 @@
   body.light .theme-toggle:hover {
     background-color: #0d47a1;
   }
+
+  /* Confetti styles */
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 1;
+    animation: fly 1.2s forwards;
+  }
+
+  @keyframes fly {
+    to {
+      transform: translate(var(--x), var(--y)) rotate(var(--r));
+      opacity: 0;
+    }
+  }
 </style>
 </head>
 <body>
@@ -162,6 +181,7 @@
   const progressBar = document.getElementById('progressBar');
   const quipsEl = document.getElementById('quips');
   const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+  const card = document.querySelector('.card');
 
   const quips = [
     "Getting ready for the tassel flip...",
@@ -259,22 +279,38 @@
     return n.toString().padStart(2, '0');
   }
 
-  function createExplosion() {
-    const explosion = document.createElement('span');
-    explosion.textContent = "💥";
-    explosion.style.position = "absolute";
-    explosion.style.fontSize = "2rem";
-    explosion.style.top = "10%";
-    explosion.style.left = "50%";
-    explosion.style.transform = "translateX(-50%)";
-    explosion.style.opacity = "1";
-    explosion.style.transition = "opacity 1.5s ease-out, top 1.5s ease-out";
-    document.querySelector('.card').appendChild(explosion);
-    setTimeout(() => {
-      explosion.style.opacity = '0';
-      explosion.style.top = "0";
-    }, 100);
-    setTimeout(() => explosion.remove(), 1600);
+  function randomRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function createConfetti() {
+    const colors = ['#FFC107', '#4CAF50', '#2196F3', '#E91E63', '#FF5722', '#9C27B0', '#00BCD4'];
+
+    for (let i = 0; i < 30; i++) {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+      // Start near center top of card
+      confetti.style.left = '50%';
+      confetti.style.top = '20%';
+
+      // Random trajectory: translateX and translateY and rotation degrees
+      const x = randomRange(-150, 150) + 'px';
+      const y = randomRange(-150, 150) + 'px';
+      const r = randomRange(0, 720) + 'deg';
+
+      confetti.style.setProperty('--x', x);
+      confetti.style.setProperty('--y', y);
+      confetti.style.setProperty('--r', r);
+
+      card.appendChild(confetti);
+
+      // Remove after animation
+      confetti.addEventListener('animationend', () => {
+        confetti.remove();
+      });
+    }
   }
 
   let lastMinute = null;
@@ -312,7 +348,7 @@
 
     if (minutes !== lastMinute) {
       lastMinute = minutes;
-      createExplosion();
+      createConfetti();
     }
   }
 
@@ -327,12 +363,13 @@
       document.body.classList.remove('light');
       toggleThemeBtn.setAttribute('aria-pressed', 'false');
       toggleThemeBtn.innerHTML = `<i class="fas fa-moon"></i> Dark Mode`;
+      localStorage.setItem('theme', 'dark');
     } else {
       document.body.classList.add('light');
       toggleThemeBtn.setAttribute('aria-pressed', 'true');
       toggleThemeBtn.innerHTML = `<i class="fas fa-sun"></i> Light Mode`;
+      localStorage.setItem('theme', 'light');
     }
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
   }
 
   // Load saved theme or default dark
