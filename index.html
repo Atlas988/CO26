@@ -4,50 +4,61 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Class of 2026</title>
+
+<!-- Font Awesome CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-  html, body {
-    margin: 0;
-    height: 100%;
-    font-family: 'Roboto', sans-serif;
-  }
+
   body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
     background-color: #121212;
     color: #e0e0e0;
     display: flex;
-    align-items: center;
+    height: 100vh;
     justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    transition: background-color 0.3s, color 0.3s;
-    position: relative;
-    overflow-x: hidden;
+    align-items: center;
+    transition: background-color 0.4s, color 0.4s;
   }
-  h1 {
-    margin-bottom: 0.5em;
-  }
+
   .card {
-    background: #1e1e1e;
+    background-color: #1e1e1e;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    padding: 2rem;
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
+    padding: 2rem 3rem;
+    width: 350px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: relative;
-    overflow: visible;
   }
-  .countdown {
+
+  h1 {
+    margin: 0 0 0.4em 0;
+    font-weight: 700;
     font-size: 2rem;
-    margin: 1em 0;
-    min-height: 2.5em;
   }
+
+  .countdown {
+    font-size: 1.8rem;
+    margin: 0.4em 0 1em 0;
+    min-height: 2.5em;
+    font-weight: 600;
+  }
+
   .quips {
     font-style: italic;
-    margin: 1em 0 2em 0;
+    margin: 0.5em 0 1.5em 0;
     min-height: 1.8em;
-    color: #ffeb3b; /* Bright yellow */
+    color: #ffd54f; /* yellow */
+    text-align: center;
   }
+
   progress {
     width: 100%;
     height: 20px;
@@ -55,8 +66,8 @@
     appearance: none;
     -webkit-appearance: none;
     background-color: #333;
-    margin-bottom: 0.3em;
-    transition: background-color 0.3s;
+    margin-bottom: 1.5em;
+    transition: background-color 0.4s;
   }
   progress::-webkit-progress-bar {
     background-color: #333;
@@ -65,73 +76,39 @@
   progress::-webkit-progress-value {
     background-color: #64b5f6;
     border-radius: 10px;
+    transition: background-color 0.4s;
   }
   progress::-moz-progress-bar {
     background-color: #64b5f6;
     border-radius: 10px;
   }
-  #progressPercent {
-    font-weight: 600;
-    color: #64b5f6;
-    margin-bottom: 1.5em;
-  }
-
-  /* Explosion animation */
-  .explosion {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    pointer-events: none;
-    width: 120px;
-    height: 120px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: radial-gradient(circle, #ffeb3b 0%, transparent 70%);
-    animation: explode 800ms ease-out forwards;
-    opacity: 0;
-  }
-  @keyframes explode {
-    0% {
-      opacity: 0.8;
-      transform: translate(-50%, -50%) scale(0.5);
-    }
-    50% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1.4);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(1.8);
-    }
-  }
 
   /* Theme toggle button */
   .theme-toggle {
-    position: fixed;
-    bottom: 1rem;
-    left: 1rem;
     cursor: pointer;
-    padding: 0.6em 1.2em;
+    padding: 0.5em 1em;
     background-color: #1e88e5;
     border: none;
-    border-radius: 30px;
+    border-radius: 5px;
     color: white;
     font-weight: 600;
     user-select: none;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.3s;
     display: flex;
     align-items: center;
-    gap: 0.6em;
-    box-shadow: 0 3px 7px rgba(30,136,229,0.7);
+    gap: 0.5em;
     font-size: 1rem;
   }
   .theme-toggle:hover {
     background-color: #1565c0;
   }
-  .theme-toggle svg {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
+
+  /* Position the toggle button bottom-left */
+  #toggleThemeBtn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 100;
   }
 
   /* Light theme */
@@ -140,12 +117,11 @@
     color: #202020;
   }
   body.light .card {
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    color: #202020;
+    background-color: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   }
   body.light .quips {
-    color: #fbc02d; /* Slightly darker yellow for light mode */
+    color: #fbc02d;
   }
   body.light progress {
     background-color: #ddd;
@@ -159,13 +135,8 @@
   body.light progress::-moz-progress-bar {
     background-color: #1976d2;
   }
-  body.light #progressPercent {
-    color: #1976d2;
-  }
   body.light .theme-toggle {
     background-color: #1976d2;
-    color: white;
-    box-shadow: 0 3px 7px rgba(25,118,210,0.7);
   }
   body.light .theme-toggle:hover {
     background-color: #0d47a1;
@@ -174,28 +145,23 @@
 </head>
 <body>
 
-<div class="card" role="main" aria-label="Class of 2026 Countdown Card">
+<div class="card" role="main" aria-label="Countdown to graduation">
   <h1>Class of 2026</h1>
-  <div class="countdown" id="countdown" aria-live="polite" aria-atomic="true">Loading...</div>
-
+  <div class="countdown" id="countdown" aria-live="polite">Loading...</div>
   <progress id="progressBar" value="0" max="100" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></progress>
-  <div id="progressPercent" aria-live="polite" aria-atomic="true">0%</div>
-
-  <div class="quips" id="quips" aria-live="polite" aria-atomic="true"></div>
+  <div class="quips" id="quips" aria-live="polite"></div>
 </div>
 
 <button class="theme-toggle" id="toggleThemeBtn" aria-pressed="false" aria-label="Toggle theme">
-  <!-- Icon and label get updated by JS -->
+  <i class="fas fa-moon"></i> Dark Mode
 </button>
 
 <script>
 (() => {
   const countdownEl = document.getElementById('countdown');
   const progressBar = document.getElementById('progressBar');
-  const progressPercentEl = document.getElementById('progressPercent');
   const quipsEl = document.getElementById('quips');
   const toggleThemeBtn = document.getElementById('toggleThemeBtn');
-  const card = document.querySelector('.card');
 
   const quips = [
     "Getting ready for the tassel flip...",
@@ -286,40 +252,42 @@
     "Keep the hustle alive till the end."
   ];
 
-  // Graduation date: May 29, 2026 00:00:00 local time
-  const gradDate = new Date(2026, 4, 29);
-
-  // School year start: July 28, 2025 00:00:00 local time
-  const schoolStart = new Date(2025, 6, 28);
+  const gradDate = new Date(2026, 4, 29); // May 29, 2026
+  const schoolStart = new Date(2025, 6, 28); // July 28, 2025
 
   function pad(n) {
     return n.toString().padStart(2, '0');
   }
 
-  // Explosion animation helper
-  function triggerExplosion() {
-    const explosion = document.createElement('div');
-    explosion.classList.add('explosion');
-    card.appendChild(explosion);
-
-    // Remove after animation completes
-    explosion.addEventListener('animationend', () => {
-      explosion.remove();
-    });
+  function createExplosion() {
+    const explosion = document.createElement('span');
+    explosion.textContent = "💥";
+    explosion.style.position = "absolute";
+    explosion.style.fontSize = "2rem";
+    explosion.style.top = "10%";
+    explosion.style.left = "50%";
+    explosion.style.transform = "translateX(-50%)";
+    explosion.style.opacity = "1";
+    explosion.style.transition = "opacity 1.5s ease-out, top 1.5s ease-out";
+    document.querySelector('.card').appendChild(explosion);
+    setTimeout(() => {
+      explosion.style.opacity = '0';
+      explosion.style.top = "0";
+    }, 100);
+    setTimeout(() => explosion.remove(), 1600);
   }
 
-  // Manage last minute for explosion
   let lastMinute = null;
 
   function update() {
     const now = new Date();
+
     let diff = gradDate - now;
 
     if (diff <= 0) {
       countdownEl.textContent = "Congratulations, Class of 2026! 🎓";
       progressBar.value = 100;
       progressBar.setAttribute('aria-valuenow', 100);
-      progressPercentEl.textContent = "100%";
       return;
     }
 
@@ -339,15 +307,12 @@
     let percent = (elapsed / totalDuration) * 100;
     if (percent < 0) percent = 0;
     if (percent > 100) percent = 100;
-
     progressBar.value = percent;
-    progressBar.setAttribute('aria-valuenow', percent.toFixed(0));
-    progressPercentEl.textContent = `${percent.toFixed(0)}%`;
+    progressBar.setAttribute('aria-valuenow', Math.round(percent));
 
-    // Trigger explosion when the minute changes
     if (minutes !== lastMinute) {
-      triggerExplosion();
       lastMinute = minutes;
+      createExplosion();
     }
   }
 
@@ -356,46 +321,44 @@
     quipsEl.textContent = quips[index];
   }
 
+  // Theme toggle logic
   function setTheme(dark) {
-    if(dark){
+    if (dark) {
       document.body.classList.remove('light');
       toggleThemeBtn.setAttribute('aria-pressed', 'false');
-      toggleThemeBtn.innerHTML = `
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M12 2a9.93 9.93 0 0 0-3.52.62 7 7 0 1 0 9.9 9.9A9.93 9.93 0 0 0 12 2z"/>
-        </svg> Dark Mode
-      `;
+      toggleThemeBtn.innerHTML = `<i class="fas fa-moon"></i> Dark Mode`;
     } else {
       document.body.classList.add('light');
       toggleThemeBtn.setAttribute('aria-pressed', 'true');
-      toggleThemeBtn.innerHTML = `
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M6.76 4.84l-1.8-1.79L3.17 5.44l1.79 1.8 1.8-1.8zm10.48 0l1.79-1.79-1.79-1.8-1.79 1.8 1.79 1.79zM12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7 2h2v2h-2v-2zm-14 0h2v2H5v-2zm9.5-5h2v2h-2v-2zm-9 0h2v2H5v-2z"/>
-        </svg> Light Mode
-      `;
+      toggleThemeBtn.innerHTML = `<i class="fas fa-sun"></i> Light Mode`;
     }
-    localStorage.setItem('darkTheme', dark ? 'true' : 'false');
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
   }
 
-  toggleThemeBtn.addEventListener('click', () => {
-    const dark = !document.body.classList.contains('light');
-    setTheme(!dark);
-  });
-
-  // Initialize theme based on saved preference or default to dark
-  const savedTheme = localStorage.getItem('darkTheme');
-  if (savedTheme === 'false') {
+  // Load saved theme or default dark
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') {
     setTheme(false);
   } else {
     setTheme(true);
   }
 
+  toggleThemeBtn.addEventListener('click', () => {
+    const isDark = !document.body.classList.contains('light');
+    setTheme(isDark);
+  });
+
+  // Initial call
   update();
   showQuip();
+
+  // Update every second
   setInterval(update, 1000);
+
+  // Change quip every 6 seconds
   setInterval(showQuip, 6000);
+
 })();
 </script>
-
 </body>
 </html>
