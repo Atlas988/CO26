@@ -17,26 +17,50 @@
       margin: 0;
       background: #f5f5f5;
       font-family: 'Roboto', sans-serif;
+      text-align: center;
     }
     .countdown-card {
       padding: 2rem;
       border-radius: 12px;
+      max-width: 500px;
     }
     .time {
       font-size: 2.5rem;
       font-weight: 700;
       color: #1976d2;
     }
+    .quip {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      color: #555;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
   <div class="card countdown-card z-depth-3 white">
-    <h4 class="center-align">Countdown to Class of 2026 Graduation</h4>
-    <div class="center-align time" id="countdown">Loading...</div>
+    <h4>Countdown to Class of 2026 Graduation</h4>
+    <div class="time" id="countdown">Loading...</div>
+    <div class="quip" id="quip">Getting ready for the tassel flip...</div>
   </div>
 
   <script>
     const graduationDate = new Date("2026-06-01T10:00:00");
+
+    const quips = [
+      "Getting ready for the tassel flip...",
+      "Senioritis loading in 3... 2... 1...",
+      "College apps and coffee, anyone?",
+      "Remember when 2026 felt forever away?",
+      "Almost time to toss that cap!",
+      "Is it too early to cry happy tears?",
+      "Caps, gowns, and goodbyes coming soon.",
+      "You've got this, Class of '26!",
+      "Keep grinding—freedom's near!",
+      "Make it count—these are the last laps!"
+    ];
+
+    let quipIndex = 0;
 
     function updateCountdown() {
       const now = new Date();
@@ -51,11 +75,18 @@
         `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
+    function rotateQuip() {
+      document.getElementById('quip').textContent = quips[quipIndex];
+      quipIndex = (quipIndex + 1) % quips.length;
+    }
+
     updateCountdown();
+    rotateQuip();
     setInterval(updateCountdown, 1000);
+    setInterval(rotateQuip, 10000);
   </script>
 
-  <!-- Materialize JS (optional for animation/interactions) -->
+  <!-- Materialize JS (optional) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
