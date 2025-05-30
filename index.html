@@ -4,25 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Class of 2026 Countdown</title>
-  <!-- Materialize CSS CDN -->
+  <!-- Materialize CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
+      font-family: 'Roboto', sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
       margin: 0;
-      background: #f5f5f5;
-      font-family: 'Roboto', sans-serif;
-      text-align: center;
+      transition: background 0.5s, color 0.5s;
     }
-    .countdown-card {
+    .card {
       padding: 2rem;
       border-radius: 12px;
       max-width: 500px;
+      text-align: center;
     }
     .time {
       font-size: 2.5rem;
@@ -32,13 +32,33 @@
     .quip {
       font-size: 1.2rem;
       margin-top: 1rem;
-      color: #555;
       font-style: italic;
+    }
+
+    /* Day Theme */
+    .day-theme {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .day-theme .card {
+      background: white;
+    }
+
+    /* Night Theme */
+    .night-theme {
+      background-color: #121212;
+      color: #eee;
+    }
+    .night-theme .card {
+      background: #1e1e1e;
+    }
+    .night-theme .time {
+      color: #90caf9;
     }
   </style>
 </head>
 <body>
-  <div class="card countdown-card z-depth-3 white">
+  <div class="card z-depth-3">
     <h4>Countdown to Class of 2026 Graduation</h4>
     <div class="time" id="countdown">Loading...</div>
     <div class="quip" id="quip">Getting ready for the tassel flip...</div>
@@ -46,7 +66,6 @@
 
   <script>
     const graduationDate = new Date("2026-06-01T10:00:00");
-
     const quips = [
       "Getting ready for the tassel flip...",
       "Senioritis loading in 3... 2... 1...",
@@ -80,6 +99,13 @@
       quipIndex = (quipIndex + 1) % quips.length;
     }
 
+    function applyTheme() {
+      const hour = new Date().getHours();
+      const isNight = hour < 6 || hour >= 18;
+      document.body.classList.add(isNight ? 'night-theme' : 'day-theme');
+    }
+
+    applyTheme();
     updateCountdown();
     rotateQuip();
     setInterval(updateCountdown, 1000);
