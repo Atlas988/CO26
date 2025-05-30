@@ -1,298 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Class of 2026 Countdown</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      transition: background 0.5s, color 0.5s;
-      background-color: #121212;
-      color: #eee;
-      flex-direction: column;
-      padding: 1rem;
-    }
-    .card {
-      padding: 2rem;
-      border-radius: 12px;
-      max-width: 550px;
-      text-align: center;
-      background: #1e1e1e;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-      width: 100%;
-      max-width: 600px;
-      position: relative;
-    }
-    .time {
-      font-size: 2.8rem;
-      font-weight: 700;
-      color: #90caf9;
-      transition: color 0.5s;
-    }
-    .quip {
-      font-size: 1.3rem;
-      margin-top: 1rem;
-      font-style: italic;
-      opacity: 1;
-      transition: opacity 0.8s ease;
-      min-height: 40px;
-    }
-    .progress-container {
-      margin-top: 2rem;
-      text-align: left;
-    }
-    .progress-label {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      color: #90caf9;
-      transition: color 0.5s;
-    }
-    .progress {
-      background-color: #333;
-      border-radius: 20px;
-      overflow: hidden;
-      height: 20px;
-    }
-    .determinate {
-      background-color: #42a5f5;
-      height: 100%;
-      width: 0;
-      transition: width 1.5s ease-out;
-    }
-    /* Day theme overrides */
-    body.day-theme {
-      background-color: #f5f5f5;
-      color: #333;
-    }
-    body.day-theme .card {
-      background: white;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-    body.day-theme .time {
-      color: #1976d2;
-    }
-    body.day-theme .progress-label {
-      color: #1976d2;
-    }
-    body.day-theme .progress {
-      background-color: #eee;
-    }
-    body.day-theme .determinate {
-      background-color: #1976d2;
-    }
-    /* Dark theme overrides */
-    body.night-theme {
-      background-color: #121212;
-      color: #eee;
-    }
-    body.night-theme .card {
-      background: #1e1e1e;
-    }
-    body.night-theme .time {
-      color: #90caf9;
-    }
-    body.night-theme .progress-label {
-      color: #90caf9;
-    }
-    body.night-theme .progress {
-      background-color: #333;
-    }
-    body.night-theme .determinate {
-      background-color: #42a5f5;
-    }
-    /* Theme toggle button */
-    #theme-toggle {
-      margin-top: 15px;
-      padding: 8px 18px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 25px;
-      background-color: #42a5f5;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(66,165,245,0.5);
-      transition: background-color 0.3s ease;
-    }
-    #theme-toggle:hover {
-      background-color: #1e88e5;
-    }
-    /* Motivational quote */
-    #daily-quote {
-      margin-top: 20px;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 1.1rem;
-      max-width: 600px;
-      text-align: center;
-      color: #fbc02d;
-      text-shadow: 0 0 8px rgba(251, 192, 45, 0.7);
-      min-height: 44px;
-      transition: opacity 0.8s ease;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Class of 2026 Countdown</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 2rem;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  h1 {
+    margin-bottom: 0.2em;
+  }
+  .countdown {
+    font-size: 1.8rem;
+    margin: 0.5em 0 0.8em 0;
+    min-height: 2.5em;
+  }
+  .quips {
+    font-style: italic;
+    margin: 0.5em 0 2em 0;
+    min-height: 1.8em;
+    color: #90caf9;
+  }
+  progress {
+    width: 100%;
+    max-width: 400px;
+    height: 20px;
+    border-radius: 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #333;
+    margin-bottom: 1em;
+    transition: background-color 0.3s;
+  }
+  progress::-webkit-progress-bar {
+    background-color: #333;
+    border-radius: 10px;
+  }
+  progress::-webkit-progress-value {
+    background-color: #64b5f6;
+    border-radius: 10px;
+  }
+  progress::-moz-progress-bar {
+    background-color: #64b5f6;
+    border-radius: 10px;
+  }
+  .theme-toggle {
+    margin-top: auto;
+    cursor: pointer;
+    padding: 0.5em 1em;
+    background-color: #1e88e5;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    user-select: none;
+    transition: background-color 0.3s;
+  }
+  .theme-toggle:hover {
+    background-color: #1565c0;
+  }
+  /* Light theme */
+  body.light {
+    background-color: #f5f5f5;
+    color: #202020;
+  }
+  body.light .quips {
+    color: #1976d2;
+  }
+  body.light progress {
+    background-color: #ddd;
+  }
+  body.light progress::-webkit-progress-bar {
+    background-color: #ddd;
+  }
+  body.light progress::-webkit-progress-value {
+    background-color: #1976d2;
+  }
+  body.light progress::-moz-progress-bar {
+    background-color: #1976d2;
+  }
+  body.light .theme-toggle {
+    background-color: #1976d2;
+    color: white;
+  }
+  body.light .theme-toggle:hover {
+    background-color: #0d47a1;
+  }
+</style>
 </head>
-<body class="night-theme">
-  <div class="card z-depth-3" role="main" aria-label="Countdown to Class of 2026 Graduation">
-    <h4>Countdown to Class of 2026 Graduation</h4>
-    <div class="time" id="countdown" aria-live="polite" aria-atomic="true">Loading...</div>
-    <div class="quip" id="quip" aria-live="polite" aria-atomic="true">Getting ready for the tassel flip...</div>
-    <div class="progress-container" aria-label="Graduation progress">
-      <div class="progress-label" id="progress-percent">0% complete</div>
-      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div class="determinate" id="progress-bar" style="width: 0%"></div>
-      </div>
-    </div>
-  </div>
+<body>
 
-  <button id="theme-toggle" aria-label="Toggle Dark or Light Theme">Toggle Theme</button>
+<h1>Class of 2026 Countdown</h1>
 
-  <div id="daily-quote" aria-live="polite" aria-atomic="true"></div>
+<div class="countdown" id="countdown">Loading...</div>
+<progress id="progressBar" value="0" max="100"></progress>
+<div class="quips" id="quips"></div>
 
-  <script>
-    const graduationDate = new Date("2026-05-29T10:00:00");
-    const startDate = new Date("2022-07-28");
+<button class="theme-toggle" id="toggleThemeBtn">Switch to Light Theme</button>
 
-    const quips = [
-      "Getting ready for the tassel flip...",
-      "Senioritis loading in 3... 2... 1...",
-      "College apps and coffee, anyone?",
-      "Remember when 2026 felt forever away?",
-      "Almost time to toss that cap!",
-      "Is it too early to cry happy tears?",
-      "Caps, gowns, and goodbyes coming soon.",
-      "You've got this, Class of '26!",
-      "Keep grinding—freedom's near!",
-      "Make it count—these are the last laps!"
-    ];
+<script>
+(() => {
+  const countdownEl = document.getElementById('countdown');
+  const progressBar = document.getElementById('progressBar');
+  const quipsEl = document.getElementById('quips');
+  const toggleThemeBtn = document.getElementById('toggleThemeBtn');
 
-    const motivationalQuotes = [
-      "Believe you can and you're halfway there.",
-      "Every accomplishment starts with the decision to try.",
-      "Don't watch the clock; do what it does. Keep going.",
-      "Success is the sum of small efforts repeated day in and day out.",
-      "Dream big. Work hard. Stay focused.",
-      "The future belongs to those who believe in the beauty of their dreams.",
-      "Push yourself, because no one else is going to do it for you.",
-      "Mistakes are proof that you are trying.",
-      "Success doesn’t come from what you do occasionally, it comes from what you do consistently.",
-      "Your limitation—it’s only your imagination."
-    ];
+  // Quips list (80+ entries)
+  const quips = [
+    "Getting ready for the tassel flip...",
+    "Senioritis loading in 3... 2... 1...",
+    "College apps and coffee, anyone?",
+    "Remember when 2026 felt forever away?",
+    "Almost time to toss that cap!",
+    "Is it too early to cry happy tears?",
+    "Caps, gowns, and goodbyes coming soon.",
+    "You've got this, Class of '26!",
+    "Keep grinding—freedom's near!",
+    "Make it count—these are the last laps!",
+    "Dream big, work hard, graduate proud!",
+    "Every day is a step closer to glory.",
+    "The tassel’s worth the hassle!",
+    "Books today, success tomorrow.",
+    "Final countdown: make it legendary!",
+    "Almost there, no time to slack!",
+    "Senior year vibes: hustle and heart.",
+    "Turn those late nights into bright futures.",
+    "Stay focused, finish strong!",
+    "One step closer to the stage!",
+    "Hustle in silence, graduate with pride.",
+    "Your future is calling—answer it!",
+    "Keep calm and graduate on.",
+    "From freshmen fears to senior cheers!",
+    "One cap, one gown, one epic day.",
+    "Knowledge is your superpower.",
+    "Late nights today, bright days tomorrow.",
+    "Your success story starts here.",
+    "Keep the fire burning till the end.",
+    "Dream it. Believe it. Achieve it.",
+    "Counting down the days till you soar.",
+    "Chasing dreams and deadlines alike.",
+    "The best is yet to come.",
+    "Almost there—finish line in sight!",
+    "Good things come to those who graduate.",
+    "The tassel moves one way, success the other.",
+    "Keep your head high and your goals higher.",
+    "Your journey is just beginning.",
+    "Make these last days unforgettable!",
+    "Celebrate every small victory.",
+    "Stay hungry, stay foolish, graduate smart!",
+    "School’s out forever—almost!",
+    "One more year to change the world.",
+    "You’re the author of your own success story.",
+    "Keep your eyes on the prize.",
+    "You’ve got the power to make it happen.",
+    "Turn your dreams into plans.",
+    "The tassel was worth every struggle.",
+    "Almost time to shine on that stage!",
+    "Write your legacy one day at a time.",
+    "Class of '26: legends in the making.",
+    "Hard work pays off—just wait.",
+    "The future is yours—grab it!",
+    "Keep pushing, keep climbing, keep thriving.",
+    "Finish strong, start stronger.",
+    "This is your moment—own it.",
+    "Cap, gown, greatness awaits.",
+    "Here’s to the nights that turned into memories.",
+    "Stay true, stay you, graduate proud.",
+    "Success is a journey, not a destination.",
+    "Keep dreaming, keep doing, keep going.",
+    "Your story is just getting good.",
+    "Late nights, early mornings, all worth it.",
+    "Every step forward is progress.",
+    "One tassel to rule them all.",
+    "Good vibes and grad vibes only.",
+    "Rise up, Class of 2026!",
+    "Almost there, don’t stop now.",
+    "Knowledge today, leaders tomorrow.",
+    "Chase your dreams, not the clock.",
+    "From books to big moves.",
+    "Countdown to memories that last forever.",
+    "Stay focused, stay fierce.",
+    "Cap-tivating moments ahead.",
+    "Graduation: where hard work meets celebration.",
+    "Make history, Class of '26!",
+    "Keep calm and carry on graduating.",
+    "Onward and upward, always.",
+    "Your time is now—shine bright.",
+    "School’s last call: answer proudly.",
+    "Class of 2026, the future’s finest.",
+    "More than a year — a journey.",
+    "Stay curious, stay unstoppable.",
+    "Almost time to fly free!",
+    "Let your dreams take flight.",
+    "Keep the hustle alive till the end."
+  ];
 
-    let quipIndex = 0;
-    let hasCelebrated = false;
-    let manualTheme = null; // null means auto, 'day' or 'night' means manual
-    let lastConfettiMinute = null;
+  // Graduation date: May 29, 2026 at 00:00:00 local time
+  const gradDate = new Date(2026, 4, 29); // months zero-indexed: 4=May
 
-    function updateCountdown() {
-      const now = new Date();
-      const totalSeconds = Math.floor((graduationDate - now) / 1000);
+  // School year start: July 28, 2025
+  const schoolStart = new Date(2025, 6, 28); // 6=July
 
-      const days = Math.floor(totalSeconds / (3600 * 24));
-      const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
+  // Format time parts with leading zeros
+  function pad(n) {
+    return n.toString().padStart(2, '0');
+  }
 
-      const countdownEl = document.getElementById('countdown');
-      if (totalSeconds > 0) {
-        countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  // Update countdown and progress
+  function update() {
+    const now = new Date();
 
-        // Confetti every full minute (only once per minute)
-        if (seconds === 0 && lastConfettiMinute !== minutes) {
-          confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
-          lastConfettiMinute = minutes;
-        }
-      } else {
-        countdownEl.textContent = "🎓 Congratulations, Class of 2026!";
-        if (!hasCelebrated) {
-          confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
-          hasCelebrated = true;
-        }
-      }
+    // Time diff until grad
+    let diff = gradDate - now;
 
-      updateProgressBar(now);
+    if (diff <= 0) {
+      countdownEl.textContent = "Congratulations, Class of 2026! 🎓";
+      progressBar.value = 100;
+      return;
     }
 
-    function updateProgressBar(currentDate) {
-      const totalDuration = graduationDate - startDate;
-      const timeElapsed = currentDate - startDate;
-      let progressPercent = Math.min(100, Math.max(0, (timeElapsed / totalDuration) * 100));
-      const progressBar = document.getElementById('progress-bar');
-      progressBar.style.width = progressPercent.toFixed(2) + "%";
-      document.getElementById('progress-percent').textContent = progressPercent.toFixed(1) + "% complete";
-      progressBar.parentElement.setAttribute('aria-valuenow', progressPercent.toFixed(1));
+    // Calculate days, hours, minutes, seconds
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+    const minutes = Math.floor(diff / (1000 * 60));
+    diff -= minutes * (1000 * 60);
+    const seconds = Math.floor(diff / 1000);
+
+    countdownEl.textContent =
+      `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+
+    // Calculate progress through school year
+    const totalDuration = gradDate - schoolStart;
+    const elapsed = now - schoolStart;
+    let percent = (elapsed / totalDuration) * 100;
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+    progressBar.value = percent;
+  }
+
+  // Show a random quip every 6 seconds
+  function showQuip() {
+    const index = Math.floor(Math.random() * quips.length);
+    quipsEl.textContent = quips[index];
+  }
+
+  // Theme toggle logic
+  function setTheme(dark) {
+    if(dark){
+      document.body.classList.remove('light');
+      toggleThemeBtn.textContent = 'Switch to Light Theme';
+    } else {
+      document.body.classList.add('light');
+      toggleThemeBtn.textContent = 'Switch to Dark Theme';
     }
+    localStorage.setItem('darkTheme', dark ? 'true' : 'false');
+  }
 
-    function fadeQuip() {
-      const quipEl = document.getElementById('quip');
-      quipEl.style.opacity = 0;
-      setTimeout(() => {
-        quipEl.textContent = quips[quipIndex];
-        quipEl.style.opacity = 1;
-        quipIndex = (quipIndex + 1) % quips.length;
-      }, 800);
-    }
+  toggleThemeBtn.addEventListener('click', () => {
+    const dark = !document.body.classList.contains('light');
+    setTheme(!dark);
+  });
 
-    function updateDailyQuote() {
-      const now = new Date();
-      const startOfYear = new Date(now.getFullYear(), 0, 0);
-      const diff = now - startOfYear;
-      const oneDay = 1000 * 60 * 60 * 24;
-      const dayOfYear = Math.floor(diff / oneDay);
-      const quote = motivationalQuotes[dayOfYear % motivationalQuotes.length];
+  // Initialize theme based on saved preference or default to dark
+  const savedTheme = localStorage.getItem('darkTheme');
+  if (savedTheme === 'false') {
+    setTheme(false);
+  } else {
+    setTheme(true);
+  }
 
-      const quoteEl = document.getElementById('daily-quote');
-      quoteEl.style.opacity = 0;
-      setTimeout(() => {
-        quoteEl.textContent = `"${quote}"`;
-        quoteEl.style.opacity = 1;
-      }, 800);
-    }
+  // Start
+  update();
+  showQuip();
+  setInterval(update, 1000);
+  setInterval(showQuip, 6000);
+})();
+</script>
 
-    function applyTheme() {
-      if (manualTheme) {
-        // Manual override
-        document.body.classList.remove('day-theme', 'night-theme');
-        document.body.classList.add(manualTheme === 'day' ? 'day-theme' : 'night-theme');
-        return;
-      }
-
-      // Force dark theme always by default:
-      document.body.classList.remove('day-theme', 'night-theme');
-      document.body.classList.add('night-theme');
-    }
-
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-      if (!manualTheme) {
-        // Toggle based on current
-        manualTheme = document.body.classList.contains('day-theme') ? 'night' : 'day';
-      } else {
-        manualTheme = manualTheme === 'day' ? 'night' : 'day';
-      }
-      applyTheme();
-    });
-
-    // Initial load
-    applyTheme();
-    updateCountdown();
-    fadeQuip();
-    updateDailyQuote();
-
-    // Intervals
-    setInterval(updateCountdown, 1000);
-    setInterval(fadeQuip, 10000);
-    setInterval(updateDailyQuote, 60000); // update quote every minute (optional)
-
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
