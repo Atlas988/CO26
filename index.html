@@ -40,12 +40,6 @@
       font-weight: bold;
       margin-bottom: 0.5rem;
     }
-    .milestones {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      margin-top: 5px;
-    }
     .school-days {
       margin-top: 1.5rem;
       font-weight: bold;
@@ -81,16 +75,6 @@
     <div class="time" id="countdown">Loading...</div>
     <div class="quip" id="quip">Getting ready for the tassel flip...</div>
 
-    <!-- Grade Selector -->
-    <div class="input-field" style="margin-top: 1rem;">
-      <select id="gradeSelect">
-        <option value="2022-07-28">Freshman</option>
-        <option value="2023-07-28">Sophomore</option>
-        <option value="2024-07-28">Junior</option>
-        <option value="2025-07-28" selected>Senior</option>
-      </select>
-      <label>Select Your Grade Level</label>
-    </div>
     <div class="school-days" id="schoolDaysLeft">School days left: ...</div>
 
     <!-- Progress Bar -->
@@ -99,17 +83,13 @@
       <div class="progress">
         <div class="determinate" id="progress-bar" style="width: 0%"></div>
       </div>
-      <div class="milestones">
-        <span>🟢 Freshman</span>
-        <span>🔵 Sophomore</span>
-        <span>🟣 Junior</span>
-        <span>🔴 Senior</span>
-      </div>
     </div>
   </div>
 
   <script>
     const graduationDate = new Date("2026-05-29T10:00:00");
+    const seniorStartDate = new Date("2025-07-28");
+
     const quips = [
       "Getting ready for the tassel flip...",
       "Senioritis loading in 3... 2... 1...",
@@ -147,7 +127,7 @@
       }
 
       updateProgressBar(now);
-      updateSchoolDays();
+      updateSchoolDays(now);
     }
 
     function updateProgressBar(currentDate) {
@@ -181,12 +161,10 @@
       return count;
     }
 
-    function updateSchoolDays() {
-      const selected = document.getElementById('gradeSelect').value;
-      const start = new Date(selected);
-      const now = new Date();
-      const schoolStart = now > start ? now : start;
-      const days = countSchoolDays(schoolStart, graduationDate);
+    function updateSchoolDays(now) {
+      // school days left from today or seniorStartDate whichever is later
+      const start = now > seniorStartDate ? now : seniorStartDate;
+      const days = countSchoolDays(start, graduationDate);
       document.getElementById('schoolDaysLeft').textContent = `School days left: ${days}`;
     }
 
@@ -195,13 +173,6 @@
     rotateQuip();
     setInterval(updateCountdown, 1000);
     setInterval(rotateQuip, 10000);
-
-    document.addEventListener('DOMContentLoaded', function () {
-      const elems = document.querySelectorAll('select');
-      M.FormSelect.init(elems);
-      document.getElementById('gradeSelect').addEventListener('change', updateSchoolDays);
-      updateSchoolDays();
-    });
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
